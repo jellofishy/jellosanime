@@ -39,7 +39,22 @@ export default function Detail() {
     return () => { document.title = "jellosanime"; };
   }, [anime]);
 
-  if (status === "loading") return <p className="muted">Loading…</p>;
+  if (status === "loading") {
+    // Placeholder shapes that match the real page while data loads.
+    return (
+      <div className="detail" aria-busy="true" aria-label="Loading anime">
+        <div className="detail-banner skeleton" />
+        <div className="detail-top">
+          <div className="detail-cover skeleton" />
+          <div className="detail-head" style={{ flex: 1 }}>
+            <div className="skeleton skeleton-line" style={{ height: 28, width: "80%" }} />
+            <div className="skeleton skeleton-line short" />
+          </div>
+        </div>
+        <div className="skeleton" style={{ height: 120, margin: "20px 0", borderRadius: "var(--radius-md)" }} />
+      </div>
+    );
+  }
   if (status === "notfound") {
     return <p>We couldn't find that anime. <Link to="/browse" className="link">Browse anime</Link></p>;
   }

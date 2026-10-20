@@ -4,7 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="jellosanime - discover any anime and find where to watch it legally." />
+    <meta name="theme-color" content="#FFF5F8" />
     <title>jellosanime</title>
+
+    <!-- Friendly fonts from Google Fonts (Fredoka for headings, Nunito for text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka:wght@500;600&display=swap" rel="stylesheet" />
+
+    <!-- Runs BEFORE the page is drawn so there is no white flash.
+         It picks "light" or "dark": saved choice first, otherwise light
+         (unless the device says it prefers dark). -->
+    <script>
+      (function () {
+        var theme = "light";
+        try {
+          var saved = localStorage.getItem("jellosanime-theme");
+          if (saved === "light" || saved === "dark") {
+            theme = saved;
+          } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            theme = "dark";
+          }
+        } catch (e) {
+          // Storage blocked (private mode): stay with the default look.
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", theme === "dark" ? "#1A1322" : "#FFF5F8");
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -7,6 +7,7 @@ import Browse from "./pages/Browse.jsx";
 import Login from "./pages/Login.jsx";
 import MyList from "./pages/MyList.jsx";
 import Detail from "./pages/Detail.jsx";
+import BackToTop from "./components/BackToTop.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         </ErrorBoundary>
       </main>
       <Footer />
+      <BackToTop />
     </>
   );
 }

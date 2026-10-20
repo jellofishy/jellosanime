@@ -18,7 +18,18 @@ export default function AnimeRow({ title, kind }) {
     <section className="row">
       <h2>{title}</h2>
       {failed && <p className="muted">Couldn't load this right now.</p>}
-      {!items && !failed && <p className="muted">Loading…</p>}
+      {/* Grey shimmering placeholders while loading (same size as real cards) */}
+      {!items && !failed && (
+        <div className="row-scroll" aria-busy="true" aria-label={`Loading ${title}`}>
+          {Array.from({ length: 6 }, (_, i) => (
+            <div className="card skeleton-card" key={i} aria-hidden="true">
+              <div className="poster skeleton" />
+              <div className="skeleton skeleton-line" />
+              <div className="skeleton skeleton-line short" />
+            </div>
+          ))}
+        </div>
+      )}
       {items && (
         <div className="row-scroll">
           {items.map((a) => <AnimeCard key={a.malId} anime={a} />)}

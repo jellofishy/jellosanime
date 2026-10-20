@@ -2,6 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext.jsx";
+import ThemeToggle from "./ThemeToggle.jsx";
 import { supabase, loginEnabled } from "../auth/supabaseClient.js";
 
 export default function Header() {
@@ -27,6 +28,7 @@ export default function Header() {
           />
         </form>
         <Link to="/browse" className="nav-link">Browse</Link>
+        <ThemeToggle />
         {loginEnabled && (user ? (
           <>
             <Link to="/my-list" className="nav-link">My List</Link>
