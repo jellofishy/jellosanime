@@ -1,0 +1,16 @@
+# Tells Netlify how to build and host jellosanime.
+[build]
+  command = "npm run build"     # builds the React site into /dist
+  publish = "dist"              # the folder Netlify serves
+  functions = "netlify/functions"
+
+# Local development: `npm run dev` runs Vite + the functions together.
+[dev]
+  command = "npm run dev:vite"
+  targetPort = 5173
+
+# Makes page links like /anime/1 work when you refresh the browser.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
