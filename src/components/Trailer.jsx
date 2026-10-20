@@ -12,6 +12,7 @@ export default function Trailer({ youtubeId }) {
         src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
         title="Official trailer"
         loading="lazy"
+        referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       />
     </div>

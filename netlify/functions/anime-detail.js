@@ -38,6 +38,10 @@ export default async (request) => {
     if (!result) return jsonResponse({ error: "Anime not found" }, 3600, 404);
     return jsonResponse(result, ONE_DAY);
   } catch (err) {
+    // Too many requests waiting: tell the browser to try again soon.
+    if (err.status === 503) {
+      return jsonResponse({ error: "Busy, please try again in a moment" }, 1, 503);
+    }
     // Don't let the CDN remember errors, and don't leak details.
     return jsonResponse({ error: "Could not load this anime right now." }, 1, 502);
   }

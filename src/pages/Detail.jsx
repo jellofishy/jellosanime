@@ -9,6 +9,8 @@ import Trailer from "../components/Trailer.jsx";
 
 // Turns a possible list into a safe list.
 const list = (v) => (Array.isArray(v) ? v.filter(Boolean) : []);
+// Same, but also removes repeated names (a genre and a theme can share a name).
+const unique = (v) => [...new Set(list(v))];
 
 export default function Detail() {
   const { id } = useParams();
@@ -17,15 +19,17 @@ export default function Detail() {
 
   useEffect(() => {
     let cancelled = false;
-    setStatus("loading");
     setAnime(null);
+    // An id that isn't a whole number can never exist: show "not found" without calling the API.
+    if (!/^\d+$/.test(String(id))) { setStatus("notfound"); return; }
+    setStatus("loading");
     fetchAnimeDetail(id)
       .then((data) => {
         if (cancelled) return;
         if (data && data.anime) { setAnime(data.anime); setStatus("ok"); }
         else setStatus("error");
       })
-      .catch((err) => { if (!cancelled) setStatus(err.status === 404 ? "notfound" : "error"); });
+      .catch((err) => { if (!cancelled) setStatus(err.status === 404 || err.status === 400 ? "notfound" : "error"); });
     return () => { cancelled = true; };
   }, [id]);
 
@@ -46,7 +50,7 @@ export default function Detail() {
   const title = anime.titleEnglish || anime.title || "Untitled";
   const who = anime.whoItsFor || {};
   const ageLevel = ["everyone", "kids", "teens", "mature"].includes(who.ageLevel) ? who.ageLevel : "unknown";
-  const tags = [...list(anime.genres), ...list(anime.themes), ...list(anime.demographics)];
+  const tags = unique([...list(anime.genres), ...list(anime.themes), ...list(anime.demographics)]);
   const season = [anime.season, anime.year].filter(Boolean).join(" ");
 
   // Key facts: only the ones that have a value are shown.
@@ -58,7 +62,10 @@ export default function Detail() {
     ["Aired", anime.aired],
     ["Duration", anime.duration],
     ["Studio", list(anime.studios).join(", ")],
+    ["Producers", list(anime.producers).join(", ")],
     ["Rank", anime.rank ? `#${anime.rank}` : ""],
+    ["Popularity", anime.popularity > 0 ? `#${anime.popularity}` : ""],
+    ["Members", anime.members > 0 ? Number(anime.members).toLocaleString("en-US") : ""],
   ].filter(([, v]) => v !== null && v !== undefined && v !== "");
 
   const redditUrl = "https://www.reddit.com/search/?q=" + encodeURIComponent(title + " anime");
@@ -78,7 +85,7 @@ export default function Detail() {
         <div className="detail-head">
           <h1>{title}</h1>
           {anime.titleJapanese && <p className="muted jp">{anime.titleJapanese}</p>}
-          {anime.score && <p className="score">★ {anime.score}</p>}
+          {typeof anime.score === "number" && anime.score > 0 && <p className="score">★ {anime.score}</p>}
           <AddToListButton anime={anime} />
         </div>
       </div>
@@ -89,12 +96,6 @@ export default function Detail() {
             <div key={k}><dt>{k}</dt><dd>{String(v)}</dd></div>
           ))}
         </dl>
-      )}
-
-      {tags.length > 0 && (
-        <div className="chips">
-          {tags.map((t) => <span className="chip" key={t}>{t}</span>)}
-        </div>
       )}
 
       <section className="detail-section">

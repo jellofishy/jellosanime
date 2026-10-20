@@ -7,12 +7,14 @@ import Browse from "./pages/Browse.jsx";
 import Login from "./pages/Login.jsx";
 import MyList from "./pages/MyList.jsx";
 import Detail from "./pages/Detail.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 export default function App() {
   return (
     <>
       <Header />
       <main className="container">
+        <ErrorBoundary>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/browse" element={<Browse />} />
@@ -20,6 +22,7 @@ export default function App() {
           <Route path="/my-list" element={<MyList />} />
           <Route path="/anime/:id" element={<Detail />} />
         </Routes>
+        </ErrorBoundary>
       </main>
       <Footer />
     </>

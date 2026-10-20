@@ -6,11 +6,38 @@ import { cached, jsonResponse } from "../shared/cache.js";
 
 const ONE_DAY = 60 * 60 * 24;
 
+// Search filters we accept, and the only values each may have.
+// (No "rx": adult ratings are never allowed.)
+const ALLOWED = {
+  type: ["tv", "movie", "ova", "special", "ona", "music"],
+  status: ["airing", "complete", "upcoming"],
+  rating: ["g", "pg", "pg13", "r17", "r"],
+};
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const GENRES = /^\d{1,4}(,\d{1,4}){0,4}$/; // up to 5 numeric ids, like "1,22"
+
+// Returns only the valid filters from the URL; bad values are dropped.
+function cleanFilters(p) {
+  const out = {};
+  for (const key of Object.keys(ALLOWED)) {
+    const v = (p.get(key) || "").trim().toLowerCase();
+    if (ALLOWED[key].includes(v)) out[key] = v;
+  }
+  const genres = (p.get("genres") || "").trim();
+  if (GENRES.test(genres)) out.genres = genres;
+  for (const key of ["start_date", "end_date"]) {
+    const v = (p.get(key) || "").trim();
+    if (DATE.test(v)) out[key] = v;
+  }
+  return out;
+}
+
 export default async (request) => {
   const p = new URL(request.url).searchParams;
   const kind = p.get("kind") || "top";
-  const page = Math.max(1, parseInt(p.get("page") || "1", 10) || 1);
-  const limit = Math.min(24, parseInt(p.get("limit") || "12", 10) || 12);
+  // page is 1..50; limit is 1..24 (bad or missing numbers fall back to defaults).
+  const page = Math.min(50, Math.max(1, parseInt(p.get("page") || "1", 10) || 1));
+  const limit = Math.min(24, Math.max(1, parseInt(p.get("limit") || "12", 10) || 12));
 
   try {
     let data;
@@ -26,11 +53,8 @@ export default async (request) => {
     } else if (kind === "season") {
       data = await cached(`season:${page}:${limit}`, ttl, () => thisSeason({ page, limit }));
     } else if (kind === "search") {
-      // Only pass along the filters we allow (never anything else).
-      const filters = {};
-      for (const key of ["genres", "type", "status", "rating", "start_date", "end_date"]) {
-        if (p.get(key)) filters[key] = p.get(key);
-      }
+      // Only valid, allowed filters get through (see cleanFilters).
+      const filters = cleanFilters(p);
       const q = (p.get("q") || "").trim().slice(0, 100);
       const cacheKey = `search:${q}:${page}:${limit}:${JSON.stringify(filters)}`;
       ttl = 60 * 60;
@@ -40,6 +64,10 @@ export default async (request) => {
     }
     return jsonResponse(data, ttl);
   } catch (err) {
+    // Too many requests waiting: tell the browser to try again soon.
+    if (err.status === 503) {
+      return jsonResponse({ error: "Busy, please try again in a moment" }, 1, 503);
+    }
     // Don't let the CDN remember errors.
     return jsonResponse({ error: "Could not load anime right now." }, 1, 502);
   }

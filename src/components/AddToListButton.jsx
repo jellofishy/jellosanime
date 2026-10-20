@@ -17,7 +17,7 @@ export default function AddToListButton({ anime }) {
     setSaved(false);
     if (!supabase || !user || !malId) return;
     let cancelled = false;
-    supabase.from("my_list").select("mal_id").eq("mal_id", malId).limit(1)
+    supabase.from("my_list").select("mal_id").eq("mal_id", malId).eq("user_id", user.id).limit(1)
       .then(({ data, error: err }) => {
         if (cancelled) return;
         if (err) setError("Couldn't check your list.");
@@ -38,7 +38,7 @@ export default function AddToListButton({ anime }) {
     setError("");
     let result;
     if (saved) {
-      result = await supabase.from("my_list").delete().eq("mal_id", malId);
+      result = await supabase.from("my_list").delete().eq("mal_id", malId).eq("user_id", user.id);
     } else {
       result = await supabase.from("my_list").insert({
         mal_id: malId,

@@ -39,8 +39,10 @@ export default function Login() {
   return (
     <form className="auth-box" onSubmit={onSubmit}>
       <h1>{mode === "login" ? "Log in" : "Create account"}</h1>
-      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <input type="password" placeholder="Password (6+ characters)" value={password}
+      <label htmlFor="login-email" className="sr-only">Email</label>
+      <input id="login-email" type="email" autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      <label htmlFor="login-password" className="sr-only">Password</label>
+      <input id="login-password" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} placeholder="Password (6+ characters)" value={password}
         onChange={(e) => setPassword(e.target.value)} minLength={6} required />
       <button type="submit" disabled={busy}>{mode === "login" ? "Log in" : "Sign up"}</button>
       {message && <p className="muted">{message}</p>}

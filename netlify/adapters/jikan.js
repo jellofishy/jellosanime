@@ -59,8 +59,10 @@ function dedupe(list) {
 }
 
 function toList(json) {
+  // Safety net: drop adult items BEFORE cleaning, whatever Jikan sent.
+  const safe = (json.data || []).filter((raw) => !isAdult(raw));
   return {
-    results: dedupe((json.data || []).map(cleanAnime)),
+    results: dedupe(safe.map(cleanAnime)),
     hasNextPage: json.pagination?.has_next_page ?? false,
   };
 }
