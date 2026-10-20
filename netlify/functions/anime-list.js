@@ -14,6 +14,9 @@ const ALLOWED = {
   rating: ["g", "pg", "pg13", "r17", "r"],
 };
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+const SEASONS = ["winter", "spring", "summer", "fall"];
+const ORDER_BY = ["score", "popularity", "rank", "start_date", "title", "episodes"];
+const SORT = ["asc", "desc"];
 const GENRES = /^\d{1,4}(,\d{1,4}){0,4}$/; // up to 5 numeric ids, like "1,22"
 
 // Returns only the valid filters from the URL; bad values are dropped.
@@ -29,6 +32,15 @@ function cleanFilters(p) {
     const v = (p.get(key) || "").trim();
     if (DATE.test(v)) out[key] = v;
   }
+  // year: 4 digits, 1960..2100
+  const year = (p.get("year") || "").trim();
+  if (/^\d{4}$/.test(year) && +year >= 1960 && +year <= 2100) out.year = year;
+  const season = (p.get("season") || "").trim().toLowerCase();
+  if (SEASONS.includes(season)) out.season = season;
+  const orderBy = (p.get("order_by") || "").trim().toLowerCase();
+  if (ORDER_BY.includes(orderBy)) out.order_by = orderBy;
+  const sort = (p.get("sort") || "").trim().toLowerCase();
+  if (SORT.includes(sort)) out.sort = sort;
   return out;
 }
 
