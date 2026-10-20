@@ -21,7 +21,11 @@ async function jikanGet(path, params = {}) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await limited(() => fetch(url, { headers: { Accept: "application/json" } }));
     if (res.status === 429) { await sleep(1500 * (attempt + 1)); continue; }
-    if (!res.ok) throw new Error(`Jikan error ${res.status}`);
+    if (!res.ok) {
+      const err = new Error(`Jikan error ${res.status}`);
+      err.status = res.status; // lets callers spot a 404 (not found)
+      throw err;
+    }
     return res.json();
   }
   throw new Error("Jikan is busy, try again soon");
@@ -70,6 +74,47 @@ export async function topAnime({ filter, page = 1, limit = 12 } = {}) {
 
 export async function thisSeason({ page = 1, limit = 12 } = {}) {
   return toList(await jikanGet("/seasons/now", { page, limit }));
+}
+
+// True if this raw anime is adult content (we never show it).
+export function isAdult(raw) {
+  if (String(raw.rating || "").startsWith("Rx")) return true;
+  const adultNames = ["Hentai", "Erotica"];
+  const tags = [...(raw.genres || []), ...(raw.explicit_genres || [])];
+  return tags.some((g) => adultNames.includes(g.name));
+}
+
+// Pure helper: raw Jikan "full" anime -> our shape plus the detail-page extras.
+export function cleanAnimeDetail(raw) {
+  const names = (list) => (list || []).map((x) => x.name);
+  const a = cleanAnime(raw);
+  a.titleJapanese = raw.title_japanese || "";
+  a.themes = names(raw.themes);
+  a.demographics = names(raw.demographics);
+  a.aired = raw.aired?.string || "";
+  a.duration = raw.duration || "";
+  a.rank = raw.rank ?? null;
+  a.popularity = raw.popularity ?? null;
+  a.members = raw.members ?? null;
+  a.producers = names(raw.producers);
+  a.malUrl = raw.url || "";
+  return a;
+}
+
+// Full details for one anime. Returns null if not found or adult content.
+export async function animeById(id) {
+  const num = Number(id);
+  if (!Number.isInteger(num) || num <= 0) throw new Error("Invalid id");
+  let json;
+  try {
+    json = await jikanGet(`/anime/${num}/full`);
+  } catch (err) {
+    if (err.status === 404) return null; // no such anime
+    throw err;
+  }
+  const raw = json.data;
+  if (!raw || isAdult(raw)) return null;
+  return cleanAnimeDetail(raw);
 }
 
 export async function searchAnime({ q, page = 1, limit = 24, ...filters } = {}) {
