@@ -24,6 +24,7 @@ each milestone. The **Orchestrator** agent plans, hands out tasks, merges everyt
 | **TMDB Agent** | TMDB adapter, handles the secret key safely | `netlify/adapters/tmdb.js` | Extra images, providers, attribution info |
 | **Back-end Agent** | Netlify Functions that combine adapters, caching, rate limits, the legal-site allowlist | `netlify/functions/`, `netlify/shared/` | `/api/...` endpoints |
 | **Front-end and Design Agent** | Pages, layout, anime-style dark theme, mobile design | `src/` | Home, Browse, Detail pages |
+| **Auth Agent** | Sets up Supabase Auth, login pages, My List storage and security rules | `src/auth/`, `supabase/` | Sign up, log in, log out, protected My List |
 | **QA and Security Agent** | Tests every page, checks for exposed keys, rate limits, piracy links, adult content | `docs/QA_REPORT.md` | Pass/fail report per milestone |
 | **DevOps Agent** | Netlify setup, environment variables, deploy steps | `netlify.toml`, deploy guide | Live site and `docs/DEPLOY.md` |
 
@@ -46,6 +47,7 @@ each milestone. The **Orchestrator** agent plans, hands out tasks, merges everyt
 | M6 Extras | Knowledge + TMDB + Front-end + QA |
 | M7 Browse filters | Jikan + Back-end + Front-end + QA |
 | M7b Look and feel | Front-end and Design + QA |
+| M7c Login | Auth + Front-end + QA |
 | M8 Review and deploy | QA + DevOps (+ Orchestrator) |
 
 ## Handoff checklist (each agent reports)

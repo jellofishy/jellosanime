@@ -15,7 +15,7 @@ The site **does not host, stream, or embed episodes.** It only links out to lega
 3. Point people to legal places to watch (free first, then subscription).
 4. Be fast, mobile friendly, with a cute light-pink anime look and a dark mode.
 
-**Not goals (for now):** user accounts, our own comments, a database (that is Phase 2).
+**Not goals (for now):** our own comment section and the daily-refreshed anime database (Phase 2). Login is now IN scope (F12), using Supabase.
 
 ## 3. Who is it for?
 - **Newcomers** who don't know what to watch and want a quick "is this for me?" answer.
@@ -36,6 +36,7 @@ The site **does not host, stream, or embed episodes.** It only links out to lega
 | F8 | What fans think | Reviews from MyAnimeList (Jikan), AniList, Kitsu: score, recommended or not, a short excerpt, and a "Read full review" link. Never copy whole reviews. |
 | F9 | Discuss on Reddit | A plain link to a Reddit search for the show. No Reddit API. |
 | F10 | Where to watch | Two rows: **Free** (Tubi, Pluto TV, RetroCrush, Plex, Roku Channel, official YouTube) and **Subscription** (Crunchyroll, Netflix, Hulu, HIDIVE...). If nothing is known, say so and link to searches on the free services. |
+| F12 | Login | Sign up, log in, log out, reset password with **Supabase Auth** (email and password; Google sign-in optional). Logged-in users get **My List** saved to their account (and it works on any device). Browsing the site never requires login. |
 | F11 | Credits | Every data source is credited in the footer and next to its data. |
 
 ## 4b. Design and look (owned by the Front-end and Design Agent)
@@ -64,7 +65,7 @@ The site **does not host, stream, or embed episodes.** It only links out to lega
 | D8 | Share button on every detail page |
 | D9 | Back-to-top button and smooth animations |
 
-(Tell me which of D1–D9 to drop or add. D5 uses the browser's own storage, not a database.)
+(Tell me which of D1–D9 to drop or add. With login (F12), D5 My List is saved to the user's account; before login it falls back to the device's own storage.)
 
 ## 5. Data sources
 The **MyAnimeList ID** is the master key that links all sources together.
@@ -91,7 +92,8 @@ The **MyAnimeList ID** is the master key that links all sources together.
 - **Back end:** Netlify Functions that call the APIs, clean the data, and cache it.
 - **Adapters:** one small module per data source, each turning that source's data into the **one shared anime format** (`netlify/shared/animeShape.js`). This shared format is the "contract" that lets agents work in parallel.
 - **Hosting:** Netlify (auto-deploys from GitHub).
-- **Phase 2 (later):** Supabase database refreshed daily, plus our own comment section.
+- **Login (F12):** Supabase Auth. The public Supabase URL and anon key may be used in the browser (they are designed to be public); the protected data is guarded by Supabase Row Level Security so users can only see and change their own rows. The Supabase *service* key is secret and is never used in browser code.
+- **Phase 2 (later):** Supabase database refreshed daily, plus our own comment section (which will use the same login).
 
 ## 8. Success criteria (how we know it works)
 - Each page loads in under about 3 seconds on a normal connection.
@@ -114,6 +116,7 @@ The **MyAnimeList ID** is the master key that links all sources together.
 | **M6** Extras | Wikipedia, Wikidata, TMDB images, credits | Wikipedia credit and link shown; TMDB notice shown | Planned |
 | **M7** Browse filters | Genre, year, season, type, status, rating filters | Filters combine correctly | Planned |
 | **M7b** Look and feel | Pink theme, dark/light toggle, D1–D9 features | Both themes look right on phone and desktop | Planned |
+| **M7c** Login | Supabase project, sign up/log in/log out, My List saved per user, Row Level Security | A new user can sign up and log in; My List persists; user A cannot see user B's list | Planned |
 | **M8** Review and deploy | Full QA, security and piracy audit, Netlify deploy | Audit report is clean; site is live | Planned |
 
 ## 10. Risks
@@ -123,4 +126,5 @@ The **MyAnimeList ID** is the master key that links all sources together.
 | Rate limits hit | Request queue and caching; Jikan calls spaced out. |
 | API docs change | Each adapter agent reads the CURRENT docs before coding. |
 | Wrong ID matches between sources | Match on MAL ID first, then confirm with Wikidata and Kitsu mappings. |
+| Login security mistakes | Supabase Row Level Security on every table; QA agent tests that one user cannot read another's data; no service key in the browser. |
 | Piracy link sneaks in | Allowlist of domains plus an automated check. |
