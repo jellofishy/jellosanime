@@ -1,0 +1,148 @@
+/* jellosanime design tokens. See docs/DESIGN_SYSTEM.md for what each one is for.
+   :root = LIGHT PINK theme (the default look).
+   :root[data-theme="dark"] = DARK theme (same cute style, night colors).
+   Old names kept: --bg --panel --text --muted --accent --accent2. */
+
+/* Fonts: add this to index.html <head> (see design guide):
+   https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka:wght@500;600&display=swap */
+
+:root {
+  color-scheme: light;
+
+  /* Colors: LIGHT */
+  --bg: #FFF5F8;            /* page background, pale pink */
+  --panel: #FFFFFF;         /* cards, header, forms */
+  --panel-2: #FFE9F0;       /* chips, skeletons, hover fills */
+  --text: #3A2A38;
+  --muted: #6F5368;
+  --accent: #C2185B;        /* main pink: links, buttons, hearts */
+  --accent-contrast: #FFFFFF; /* text ON an accent button */
+  --accent-soft: #FFD3E2;   /* pink glow / selected chip fill */
+  --accent2: #6D4AE0;       /* lavender-purple: secondary buttons, focus ring */
+  --accent2-contrast: #FFFFFF;
+  --border: #F3C6D6;        /* decorative lines */
+  --border-strong: #B0829B; /* input outlines (3:1 contrast) */
+  --success: #1B7F4B;
+  --warn: #8A5A00;
+  --danger: #A3122F;
+  --star: #8F5E00;          /* score star text/icon */
+  --header-bg: rgba(255, 245, 248, .88);
+  --overlay: rgba(58, 42, 56, .45);
+  --focus-ring: #6D4AE0;
+  --hero-gradient: linear-gradient(135deg, #FFD3E2 0%, #E6DCFF 100%);
+  --skeleton-a: #FFE9F0;
+  --skeleton-b: #FFF9FB;
+
+  /* Age / status badges: -bg is the fill, -fg is the text */
+  --badge-everyone-bg: #E3F6EA; --badge-everyone-fg: #17673C;
+  --badge-kids-bg: #E1F0FF;     --badge-kids-fg: #1B568F;
+  --badge-teens-bg: #FFF0D1;    --badge-teens-fg: #7A4F00;
+  --badge-mature-bg: #FFDDE3;   --badge-mature-fg: #A3122F;
+  --badge-unknown-bg: #EEE8F0;  --badge-unknown-fg: #5C4A62;
+
+  /* Shadows (soft, pink tinted) */
+  --shadow-1: 0 1px 3px rgba(194, 24, 91, .08);
+  --shadow-2: 0 6px 18px rgba(194, 24, 91, .12);
+  --shadow-3: 0 14px 34px rgba(194, 24, 91, .18);
+
+  /* Fonts */
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Fredoka", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Font sizes */
+  --text-xs: .75rem;
+  --text-sm: .875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: clamp(1.6rem, 4vw + .5rem, 2.25rem);
+  --text-3xl: clamp(2rem, 6vw + .5rem, 3.25rem);
+  --leading: 1.55;
+
+  /* Spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Corner roundness */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(.34, 1.4, .64, 1);   /* gentle bounce */
+  --ease-soft: cubic-bezier(.4, 0, .2, 1);
+  --dur-fast: .15s;
+  --dur: .25s;
+  --dur-slow: .5s;
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: 16px;
+  --header-h: 60px;
+  --tap: 44px;              /* minimum touch target */
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #1A1322;
+  --panel: #261C31;
+  --panel-2: #32253F;
+  --text: #F8EBF3;
+  --muted: #C9B0C4;
+  --accent: #FF8FBB;
+  --accent-contrast: #2A0F1D;
+  --accent-soft: #4A2A40;
+  --accent2: #BBA6FF;
+  --accent2-contrast: #1A1322;
+  --border: #4A3860;
+  --border-strong: #8F78AA;
+  --success: #6FDC9C;
+  --warn: #FFC76B;
+  --danger: #FFA3B5;
+  --star: #FFD36B;
+  --header-bg: rgba(26, 19, 34, .88);
+  --overlay: rgba(0, 0, 0, .6);
+  --focus-ring: #BBA6FF;
+  --hero-gradient: linear-gradient(135deg, #3A2347 0%, #2A2650 100%);
+  --skeleton-a: #2E2139;
+  --skeleton-b: #3A2B48;
+
+  --badge-everyone-bg: #1E3B2B; --badge-everyone-fg: #8FE8B2;
+  --badge-kids-bg: #1C3350;     --badge-kids-fg: #9CCBFF;
+  --badge-teens-bg: #4A3814;    --badge-teens-fg: #FFD58A;
+  --badge-mature-bg: #4E1D2B;   --badge-mature-fg: #FFA3B5;
+  --badge-unknown-bg: #3A2D45;  --badge-unknown-fg: #D5C2DB;
+
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, .35);
+  --shadow-2: 0 6px 18px rgba(0, 0, 0, .4);
+  --shadow-3: 0 14px 34px rgba(0, 0, 0, .5);
+}
+
+/* Smooth color change when the toggle is pressed (the developer adds the
+   "theme-fade" class to <html> for ~400ms while switching). */
+html.theme-fade, html.theme-fade * {
+  transition: background-color var(--dur) var(--ease-soft), color var(--dur) var(--ease-soft),
+    border-color var(--dur) var(--ease-soft) !important;
+}
+
+/* Reduced motion: switch off animations for people who ask for it. */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0s; --dur: 0s; --dur-slow: 0s; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
