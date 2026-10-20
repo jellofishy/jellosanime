@@ -13,7 +13,7 @@ The site **does not host, stream, or embed episodes.** It only links out to lega
 1. Make it easy to find any anime and understand it in about a minute.
 2. Combine several free data sources into one clean page per anime.
 3. Point people to legal places to watch (free first, then subscription).
-4. Be fast, mobile friendly, and dark-mode by default.
+4. Be fast, mobile friendly, with a cute light-pink anime look and a dark mode.
 
 **Not goals (for now):** user accounts, our own comments, a database (that is Phase 2).
 
@@ -37,6 +37,34 @@ The site **does not host, stream, or embed episodes.** It only links out to lega
 | F9 | Discuss on Reddit | A plain link to a Reddit search for the show. No Reddit API. |
 | F10 | Where to watch | Two rows: **Free** (Tubi, Pluto TV, RetroCrush, Plex, Roku Channel, official YouTube) and **Subscription** (Crunchyroll, Netflix, Hulu, HIDIVE...). If nothing is known, say so and link to searches on the free services. |
 | F11 | Credits | Every data source is credited in the footer and next to its data. |
+
+## 4b. Design and look (owned by the Front-end and Design Agent)
+
+**Style:** cute, clean, anime-inspired. Soft light pink is the main color.
+
+| Item | Decision |
+|------|----------|
+| Default theme | **Light pink theme** (soft pink backgrounds, white cards, deeper pink buttons, purple accents) |
+| Dark theme | A dark purple/navy version of the same style |
+| Theme switch | A sun/moon button in the header; remembers your choice; first visit follows the device setting |
+| Fonts and shapes | Rounded corners, friendly rounded font, soft shadows, smooth hover animations |
+| Layout | Mobile first; posters in a grid and sideways-scrolling rows |
+| Colors | All colors live in one place so they can be changed in minutes |
+
+**Extra features that make it feel special** (design agent builds these after the core pages work):
+| # | Feature |
+|---|---------|
+| D1 | Light/dark theme toggle |
+| D2 | Big banner "spotlight" on the home page |
+| D3 | Loading placeholders (skeletons) instead of blank screens |
+| D4 | "Surprise me" random anime button |
+| D5 | My List (save favorites on your own device, no account needed) |
+| D6 | Mood or genre quick-pick chips ("cozy", "action", "funny"...) |
+| D7 | Colored badges for age rating and airing status |
+| D8 | Share button on every detail page |
+| D9 | Back-to-top button and smooth animations |
+
+(Tell me which of D1–D9 to drop or add. D5 uses the browser's own storage, not a database.)
 
 ## 5. Data sources
 The **MyAnimeList ID** is the master key that links all sources together.
@@ -85,6 +113,7 @@ The **MyAnimeList ID** is the master key that links all sources together.
 | **M5** Where to watch | Kitsu and TMDB providers, allowlist, Free/Subscription rows | Only allowlisted links; fallback search links work | Planned |
 | **M6** Extras | Wikipedia, Wikidata, TMDB images, credits | Wikipedia credit and link shown; TMDB notice shown | Planned |
 | **M7** Browse filters | Genre, year, season, type, status, rating filters | Filters combine correctly | Planned |
+| **M7b** Look and feel | Pink theme, dark/light toggle, D1–D9 features | Both themes look right on phone and desktop | Planned |
 | **M8** Review and deploy | Full QA, security and piracy audit, Netlify deploy | Audit report is clean; site is live | Planned |
 
 ## 10. Risks

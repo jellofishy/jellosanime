@@ -45,6 +45,7 @@ each milestone. The **Orchestrator** agent plans, hands out tasks, merges everyt
 | M5 Where to watch | Kitsu + TMDB + Back-end + Front-end + QA |
 | M6 Extras | Knowledge + TMDB + Front-end + QA |
 | M7 Browse filters | Jikan + Back-end + Front-end + QA |
+| M7b Look and feel | Front-end and Design + QA |
 | M8 Review and deploy | QA + DevOps (+ Orchestrator) |
 
 ## Handoff checklist (each agent reports)
