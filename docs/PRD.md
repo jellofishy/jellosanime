@@ -116,7 +116,7 @@ The **MyAnimeList ID** is the master key that links all sources together.
 | **M6** Extras | Wikipedia, Wikidata, TMDB images, credits | Wikipedia credit and link shown; TMDB notice shown | Planned |
 | **M7** Browse filters | Genre, year, season, type, status, rating filters | Filters combine correctly | Planned |
 | **M7b** Look and feel | Pink theme, dark/light toggle, D1–D9 features | Both themes look right on phone and desktop | Planned |
-| **M7c** Login | Supabase project, sign up/log in/log out, My List saved per user, Row Level Security | A new user can sign up and log in; My List persists; user A cannot see user B's list | Planned |
+| **M7c** Login | Supabase project, sign up/log in/log out, My List saved per user, Row Level Security | A new user can sign up and log in; My List persists; user A cannot see user B's list | Login built; needs live test |
 | **M8** Review and deploy | Full QA, security and piracy audit, Netlify deploy | Audit report is clean; site is live | Planned |
 
 ## 10. Risks
