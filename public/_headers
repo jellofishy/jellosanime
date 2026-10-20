@@ -1,0 +1,25 @@
+# Security headers for every page. Netlify reads this file from the built site.
+#
+# The inline theme script in index.html is allowed by a SHA-256 fingerprint
+# instead of the risky 'unsafe-inline'. If you EVER edit that <script> block
+# in index.html, the fingerprint changes and the theme script will be blocked
+# (flash of wrong theme). To recompute it:
+#   1. npm run build
+#   2. node -e "const h=require('fs').readFileSync('dist/index.html','utf8');const s=h.match(/<script>([\s\S]*?)<\/script>/)[1];console.log('sha256-'+require('crypto').createHash('sha256').update(s).digest('base64'))"
+#   3. Replace the sha256-... value below with the printed one.
+#
+# Why each part: scripts only from our own site; styles + fonts from Google Fonts;
+# pictures from any https site (anime covers come from several CDNs) or inline data;
+# the ONLY frame allowed is the YouTube privacy player; the browser may only talk
+# to our own site (/api) and our Supabase project.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-qwSC7aupEs9XOHA1iNRXlgyKFKc9I/f62JgZGB02U9o='; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; frame-src https://www.youtube-nocookie.com; connect-src 'self' https://lfxqfrkyfbewonhpjqhv.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000
+
+# Built files have a fingerprint in their name, so they can be kept for a year.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

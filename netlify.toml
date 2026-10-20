@@ -1,15 +1,32 @@
 # Tells Netlify how to build and host jellosanime.
+# (Security headers live in public/_headers; see docs/SECURITY_REPORT.md.)
 [build]
   command = "npm run build"     # builds the React site into /dist
   publish = "dist"              # the folder Netlify serves
   functions = "netlify/functions"
+
+  [build.environment]
+    NODE_VERSION = "22"
+    # Netlify scans the finished site for secret values. These two are PUBLIC by
+    # design (they are meant to be inside the website code), so tell the scanner
+    # to skip them. TMDB_API_KEY is NOT listed: it must never appear in the site.
+    SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_PUBLISHABLE_KEY"
 
 # Local development: `npm run dev` runs Vite + the functions together.
 [dev]
   command = "npm run dev:vite"
   targetPort = 5173
 
+# Our back-end functions. This rule comes BEFORE the catch-all below, so a
+# request like /api/anime-list goes to the function (and a made-up /api/xyz
+# gets a real 404 instead of the web page).
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 # Makes page links like /anime/1 work when you refresh the browser.
+# (Paths starting with /.netlify/ are reserved by Netlify and never reach this rule.)
 [[redirects]]
   from = "/*"
   to = "/index.html"
