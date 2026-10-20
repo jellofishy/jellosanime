@@ -1,25 +1,20 @@
 // A titled, sideways-scrolling row of anime (used on the home page).
-// It loads its own data when it appears on screen.
-import { useEffect, useState } from "react";
-import { fetchAnimeList } from "../api.js";
+// The page gives it the data, so every row can load and fail on its own:
+//   items  = null while loading, otherwise an array
+//   failed = true when the request failed
+//   renderCard(item) = optional, to draw each card differently (Airing Today does this)
+//   credit = optional small "Data from ..." line shown under the row
 import AnimeCard from "./AnimeCard.jsx";
+import "../home.css";
 
-export default function AnimeRow({ title, kind }) {
-  const [items, setItems] = useState(null); // null = still loading
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    fetchAnimeList({ kind, limit: 12 })
-      .then((data) => setItems(data.results))
-      .catch(() => setFailed(true));
-  }, [kind]);
-
+export default function AnimeRow({ title, items, failed, credit, emptyText, renderCard }) {
+  const loading = !items && !failed;
   return (
     <section className="row">
       <h2>{title}</h2>
-      {failed && <p className="muted">Couldn't load this right now.</p>}
+      {failed && <p className="muted row-msg">Couldn't load {title} right now. Please try again later.</p>}
       {/* Grey shimmering placeholders while loading (same size as real cards) */}
-      {!items && !failed && (
+      {loading && (
         <div className="row-scroll" aria-busy="true" aria-label={`Loading ${title}`}>
           {Array.from({ length: 6 }, (_, i) => (
             <div className="card skeleton-card" key={i} aria-hidden="true">
@@ -30,11 +25,25 @@ export default function AnimeRow({ title, kind }) {
           ))}
         </div>
       )}
-      {items && (
+      {items && items.length === 0 && (
+        <p className="muted row-msg">{emptyText || `Nothing to show in ${title} right now.`}</p>
+      )}
+      {items && items.length > 0 && (
         <div className="row-scroll">
-          {items.map((a) => <AnimeCard key={a.malId} anime={a} />)}
+          {items.map((a) =>
+            renderCard ? renderCard(a) : <AnimeCard key={a.malId} anime={a} />
+          )}
         </div>
       )}
+      {credit && <p className="credit muted">{credit}</p>}
     </section>
   );
 }
+
+// The two credit lines (plain text links).
+export const AniListCredit = (
+  <>Data from <a href="https://anilist.co" target="_blank" rel="noopener noreferrer">AniList</a></>
+);
+export const JikanCredit = (
+  <>Data from <a href="https://jikan.moe" target="_blank" rel="noopener noreferrer">Jikan</a> (MyAnimeList)</>
+);

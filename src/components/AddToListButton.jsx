@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../auth/supabaseClient.js";
 import { useAuth } from "../auth/AuthContext.jsx";
+import "../detail.css";
 
 export default function AddToListButton({ anime }) {
   const { user, loading } = useAuth();
@@ -51,10 +52,22 @@ export default function AddToListButton({ anime }) {
     setBusy(false);
   }
 
+  const name = anime.titleEnglish || anime.title || "this anime";
   return (
     <div>
-      <button className={"list-btn" + (saved ? " saved" : "")} onClick={toggle} disabled={busy}>
-        {saved ? "Remove from My List" : "Add to My List"}
+      {/* Heart toggle: aria-pressed tells screen readers if it is saved */}
+      <button
+        type="button"
+        className={"heart-btn" + (saved ? " saved" : "")}
+        onClick={toggle}
+        disabled={busy}
+        aria-pressed={saved}
+        aria-label={saved ? `Remove ${name} from My List` : `Add ${name} to My List`}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 21s-7.5-4.6-9.6-9.1C1 8.8 2.7 5 6.3 5c2.1 0 3.8 1.2 4.7 2.7h2C13 6.2 15.6 5 17.7 5c3.6 0 5.3 3.8 3.9 6.9C19.5 16.4 12 21 12 21z" />
+        </svg>
+        <span>{saved ? "In My List" : "Add to My List"}</span>
       </button>
       {error && <p className="muted small">{error}</p>}
     </div>

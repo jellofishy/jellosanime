@@ -4,8 +4,17 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchAnimeDetail } from "../api.js";
+import { fetchAnimeExtras } from "../apiExtras.js";
+import { isHttps } from "../safeUrl.js";
 import AddToListButton from "../components/AddToListButton.jsx";
 import Trailer from "../components/Trailer.jsx";
+import WhereToWatch from "../components/WhereToWatch.jsx";
+import Reviews from "../components/Reviews.jsx";
+import Background from "../components/Background.jsx";
+import Gallery from "../components/Gallery.jsx";
+import ShareButton from "../components/ShareButton.jsx";
+import Tags from "../components/Tags.jsx";
+import "../detail.css";
 
 // Turns a possible list into a safe list.
 const list = (v) => (Array.isArray(v) ? v.filter(Boolean) : []);
@@ -30,6 +39,21 @@ export default function Detail() {
         else setStatus("error");
       })
       .catch((err) => { if (!cancelled) setStatus(err.status === 404 || err.status === 400 ? "notfound" : "error"); });
+    return () => { cancelled = true; };
+  }, [id]);
+
+  // The extras (reviews, where to watch...) load SEPARATELY, so the page
+  // can show right away. A failure here only affects those sections.
+  const [extras, setExtras] = useState(null);
+  const [extrasStatus, setExtrasStatus] = useState("loading"); // loading | ok | error
+  useEffect(() => {
+    let cancelled = false;
+    setExtras(null);
+    if (!/^\d+$/.test(String(id))) return;
+    setExtrasStatus("loading");
+    fetchAnimeExtras(id)
+      .then((data) => { if (!cancelled) { setExtras(data); setExtrasStatus("ok"); } })
+      .catch(() => { if (!cancelled) setExtrasStatus("error"); });
     return () => { cancelled = true; };
   }, [id]);
 
@@ -90,7 +114,9 @@ export default function Detail() {
     <article className="detail">
       {/* Banner picture, or a blurred copy of the cover if there is no banner */}
       <div className="detail-banner">
-        {anime.banner
+        {extras && isHttps(extras.banner)
+          ? <img src={extras.banner} alt="" />
+          : anime.banner
           ? <img src={anime.banner} alt="" />
           : anime.image && <img className="blur" src={anime.image} alt="" />}
       </div>
@@ -101,7 +127,10 @@ export default function Detail() {
           <h1>{title}</h1>
           {anime.titleJapanese && <p className="muted jp">{anime.titleJapanese}</p>}
           {typeof anime.score === "number" && anime.score > 0 && <p className="score">★ {anime.score}</p>}
-          <AddToListButton anime={anime} />
+          <div className="action-row">
+            <AddToListButton anime={anime} />
+            <ShareButton title={title} />
+          </div>
         </div>
       </div>
 
@@ -127,6 +156,7 @@ export default function Detail() {
             {tags.map((t) => <span className="chip" key={t}>{t}</span>)}
           </div>
         )}
+        <Tags extras={extras} skip={tags} />
       </section>
 
       <section className="detail-section">
@@ -134,10 +164,13 @@ export default function Detail() {
         <Trailer youtubeId={anime.trailerYoutubeId} />
       </section>
 
-      {/* LATER (not built yet): "Where to watch", "What fans think" and "Background" sections go here. */}
+      <WhereToWatch status={extrasStatus} extras={extras} />
+      <Reviews status={extrasStatus} extras={extras} />
+      <Background status={extrasStatus} extras={extras} />
+      <Gallery extras={extras} title={title} />
 
       <p>
-        <a className="link" href={redditUrl} target="_blank" rel="noreferrer noopener">Discuss on Reddit</a>
+        <a className="link" href={redditUrl} target="_blank" rel="noopener noreferrer">Discuss on Reddit</a>
       </p>
 
       <p className="muted small credits">
