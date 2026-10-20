@@ -80,7 +80,7 @@ export async function thisSeason({ page = 1, limit = 12 } = {}) {
 
 // True if this raw anime is adult content (we never show it).
 export function isAdult(raw) {
-  if (String(raw.rating || "").startsWith("Rx")) return true;
+  if (String(raw.rating || "").trim().toLowerCase().startsWith("rx")) return true; // "Rx", "rx"...
   const adultNames = ["Hentai", "Erotica"];
   const tags = [...(raw.genres || []), ...(raw.explicit_genres || [])];
   return tags.some((g) => adultNames.includes(g.name));
@@ -119,6 +119,123 @@ export async function animeById(id) {
   return cleanAnimeDetail(raw);
 }
 
-export async function searchAnime({ q, page = 1, limit = 24, ...filters } = {}) {
-  return toList(await jikanGet("/anime", { q, page, limit, order_by: q ? undefined : "score", sort: q ? undefined : "desc", ...filters }));
+// --- Season / year -> date range ---
+
+const SEASONS = {
+  winter: ["01-01", "03-31"],
+  spring: ["04-01", "06-30"],
+  summer: ["07-01", "09-30"],
+  fall: ["10-01", "12-31"],
+};
+
+// Pure helper: (year, season?) -> { start_date, end_date } as "YYYY-MM-DD".
+// Returns null if the year is not 1960..2100 or the season is unknown.
+export function seasonToDates(year, season) {
+  const y = Number(year);
+  if (!Number.isInteger(y) || y < 1960 || y > 2100) return null;
+  const s = String(season || "").toLowerCase();
+  if (!s) return { start_date: `${y}-01-01`, end_date: `${y}-12-31` }; // whole year
+  if (!SEASONS[s]) return null;
+  return { start_date: `${y}-${SEASONS[s][0]}`, end_date: `${y}-${SEASONS[s][1]}` };
+}
+
+// Browse filters Jikan's /anime endpoint accepts that we pass straight through.
+const PASS_THROUGH = ["genres", "type", "status", "rating", "start_date", "end_date", "order_by", "sort"];
+
+// Pure helper: builds the Jikan query params from our search options.
+export function buildSearchParams({ q, page = 1, limit = 24, year, season, ...filters } = {}) {
+  const params = { q, page, limit };
+  // Without a text search, default to best-rated first.
+  if (!q) { params.order_by = "score"; params.sort = "desc"; }
+  for (const key of PASS_THROUGH) {
+    if (filters[key] !== undefined && filters[key] !== null && filters[key] !== "") params[key] = filters[key];
+  }
+  // year/season become a date range (an explicit start_date/end_date wins).
+  if (year !== undefined && year !== null && year !== "") {
+    const dates = seasonToDates(year, season);
+    if (dates) {
+      if (!params.start_date) params.start_date = dates.start_date;
+      if (!params.end_date) params.end_date = dates.end_date;
+    }
+  }
+  return params;
+}
+
+export async function searchAnime(options = {}) {
+  return toList(await jikanGet("/anime", buildSearchParams(options)));
+}
+
+// --- Genres ---
+
+// Adult genres we never list.
+const BLOCKED_GENRES = ["hentai", "erotica"];
+
+// Pure helper: raw Jikan genre list -> [{ id, name }] without adult genres.
+export function cleanGenres(json) {
+  return (json?.data || [])
+    .filter((g) => g && g.mal_id && g.name && !BLOCKED_GENRES.includes(String(g.name).toLowerCase()))
+    .map((g) => ({ id: g.mal_id, name: g.name }));
+}
+
+export async function genreList() {
+  return cleanGenres(await jikanGet("/genres/anime", { filter: "genres" }));
+}
+
+// --- MAL reviews ---
+
+// Pure helper: strips HTML/markdown/spoiler markers and cuts to 300 chars at a word boundary.
+export function makeExcerpt(text, max = 300) {
+  let t = String(text || "")
+    .replace(/<[^>]*>/g, " ")                    // HTML tags
+    .replace(/\[\/?spoiler[^\]]*\]/gi, " ")        // [spoiler] markers
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")   // markdown links/images -> text
+    .replace(/[*_~`#>|]+/g, " ")                 // markdown symbols
+    .replace(/\s+/g, " ")                        // newlines and extra spaces
+    .trim();
+  if (t.length <= max) return t;
+  t = t.slice(0, max);
+  const lastSpace = t.lastIndexOf(" ");
+  if (lastSpace > max * 0.5) t = t.slice(0, lastSpace); // cut at a word boundary
+  return t.replace(/[\s.,;:!?-]+$/, "") + "\u2026";
+}
+
+// Pure helper: one raw Jikan review -> Review, or null if it should be skipped.
+export function cleanReview(raw) {
+  if (!raw || raw.is_spoiler || raw.is_preliminary) return null;
+  const url = String(raw.url || "");
+  if (!url.startsWith("https://myanimelist.net/")) return null; // only real MAL links
+  const tags = raw.tags || [];
+  let recommended = null;
+  if (tags.includes("Not Recommended")) recommended = false;
+  else if (tags.includes("Recommended")) recommended = true;
+  const score = Number(raw.score);
+  return {
+    source: "mal",
+    author: raw.user?.username || "",
+    score: Number.isFinite(score) && raw.score !== null ? score : null,
+    recommended,
+    excerpt: makeExcerpt(raw.review),
+    url,
+    date: raw.date || "",
+  };
+}
+
+// Up to 5 MAL reviews (page 1, most helpful first). Returns [] when none / not found.
+export async function malReviews(malId) {
+  const num = Number(malId);
+  if (!Number.isInteger(num) || num <= 0) return [];
+  let json;
+  try {
+    json = await jikanGet(`/anime/${num}/reviews`, { page: 1, preliminary: "false", spoilers: "false" });
+  } catch (err) {
+    if (err.status === 404) return [];
+    throw err;
+  }
+  const helpful = (r) => Number(r?.reactions?.overall) || 0;
+  return (json.data || [])
+    .slice()
+    .sort((a, b) => helpful(b) - helpful(a))
+    .map(cleanReview)
+    .filter(Boolean)
+    .slice(0, 5);
 }
