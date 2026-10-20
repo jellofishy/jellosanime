@@ -39,7 +39,7 @@ The site **does not host, stream, or embed episodes.** It only links out to lega
 | F12 | Login | Sign up, log in, log out, reset password with **Supabase Auth** (email and password; Google sign-in optional). Logged-in users get **My List** saved to their account (and it works on any device). Browsing the site never requires login. |
 | F11 | Credits | Every data source is credited in the footer and next to its data. |
 
-## 4b. Design and look (owned by the Front-end and Design Agent)
+## 4b. Design and look (owned by the UI/UX Designer Agent; built by the Front-end Developer Agent)
 
 **Style:** cute, clean, anime-inspired. Soft light pink is the main color.
 

@@ -23,10 +23,11 @@ each milestone. The **Orchestrator** agent plans, hands out tasks, merges everyt
 | **Knowledge Agent** | Wikipedia and Wikidata adapters | `netlify/adapters/wikipedia.js`, `wikidata.js` | Background text, ID matching |
 | **TMDB Agent** | TMDB adapter, handles the secret key safely | `netlify/adapters/tmdb.js` | Extra images, providers, attribution info |
 | **Back-end Agent** | Netlify Functions that combine adapters, caching, rate limits, the legal-site allowlist | `netlify/functions/`, `netlify/shared/` | `/api/...` endpoints |
-| **Front-end and Design Agent** | Pages, layout, anime-style dark theme, mobile design | `src/` | Home, Browse, Detail pages |
+| **UI/UX Designer Agent** | Defines the visual system: pale/light pink palette, typography, spacing, rounded anime-inspired look, responsive layouts, light and dark themes, component look and feel. Does NOT write app logic. | `docs/DESIGN_SYSTEM.md`, `src/theme.css` | Design system + color/font tokens for both themes |
+| **Front-end Developer Agent** | Builds the pages and components in React and applies the Designer's system. | `src/` (pages, components) | Home, Browse, Detail, Login, My List, theme toggle |
 | **Auth Agent** | Sets up Supabase Auth, login pages, My List storage and security rules | `src/auth/`, `supabase/` | Sign up, log in, log out, protected My List |
-| **QA and Security Agent** | Tests every page, checks for exposed keys, rate limits, piracy links, adult content | `docs/QA_REPORT.md` | Pass/fail report per milestone |
-| **DevOps Agent** | Netlify setup, environment variables, deploy steps | `netlify.toml`, deploy guide | Live site and `docs/DEPLOY.md` |
+| **QA / Testing Agent** | Tests every page and feature against the milestone checklists; checks missing-data cases, mobile layout, and rate limits. Read-only on code. | `docs/QA_REPORT.md` | Pass/fail report per milestone |
+| **Security and Deployment Agent** | Audits for exposed keys, piracy links, adult content, and login/database rules; then sets up Netlify (environment variables, build) and deploys the site, walking the owner through each step. | `docs/SECURITY_REPORT.md`, `docs/DEPLOY.md`, `netlify.toml` | Clean security report + live site |
 
 ## Rules every agent follows
 - Read the **current** official docs of your API before coding.
@@ -40,15 +41,15 @@ each milestone. The **Orchestrator** agent plans, hands out tasks, merges everyt
 
 | Milestone | Agents involved |
 |-----------|-----------------|
-| M2 Detail page | Jikan + Back-end + Front-end + QA |
-| M3 Airing Today | AniList + Back-end + Front-end + QA |
-| M4 Reviews | Jikan + AniList + Kitsu + Back-end + Front-end + QA |
-| M5 Where to watch | Kitsu + TMDB + Back-end + Front-end + QA |
-| M6 Extras | Knowledge + TMDB + Front-end + QA |
-| M7 Browse filters | Jikan + Back-end + Front-end + QA |
-| M7b Look and feel | Front-end and Design + QA |
-| M7c Login | Auth + Front-end + QA |
-| M8 Review and deploy | QA + DevOps (+ Orchestrator) |
+| M2 Detail page | Jikan + Back-end + Front-end Developer + QA |
+| M3 Airing Today | AniList + Back-end + Front-end Developer + QA |
+| M4 Reviews | Jikan + AniList + Kitsu + Back-end + Front-end Developer + QA |
+| M5 Where to watch | Kitsu + TMDB + Back-end + Front-end Developer + QA |
+| M6 Extras | Knowledge + TMDB + Front-end Developer + QA |
+| M7 Browse filters | Jikan + Back-end + Front-end Developer + QA |
+| M7b Look and feel | UI/UX Designer + Front-end Developer + QA |
+| M7c Login | Auth + Front-end Developer + QA |
+| M8 Review and deploy | QA / Testing + Security and Deployment (+ Orchestrator) |
 
 ## Handoff checklist (each agent reports)
 - [ ] What I built (files)
