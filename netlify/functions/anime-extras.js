@@ -4,8 +4,8 @@
 //   TMDB images + provider names, AniList banner + tags.
 // One source failing never breaks the answer. The whole result is cached 6 hours.
 
-import { animeById, malReviews } from "../adapters/jikan.js";
-import { animeExtras } from "../adapters/anilist.js";
+import { animeById, malReviews, jikanIsDown } from "../adapters/jikan.js";
+import { animeExtras, animeBase } from "../adapters/anilist.js";
 import { kitsuExtras } from "../adapters/kitsu.js";
 import { wikidataForMal } from "../adapters/wikidata.js";
 import { wikipediaSummary, wikipediaSearch } from "../adapters/wikipedia.js";
@@ -15,7 +15,7 @@ import { cached, jsonResponse } from "../shared/cache.js";
 
 const ONE_DAY = 60 * 60 * 24;
 const SIX_HOURS = 60 * 60 * 6;
-const SOURCE_TIMEOUT_MS = 9000;
+const SOURCE_TIMEOUT_MS = 8000;
 
 // Gives a source at most `ms` milliseconds; after that it counts as failed.
 function withTimeout(promise, ms = SOURCE_TIMEOUT_MS) {
@@ -32,12 +32,25 @@ const value = (r) => (r.status === "fulfilled" ? r.value : null);
 // Does all the work for one anime. Returns the response object, or null if the
 // anime does not exist. Throws (so nothing is cached) if EVERY source failed.
 async function loadExtras(id) {
+  // Everything together must finish in ~9s (Netlify stops functions at 10s).
+  const deadline = Date.now() + 9000;
+  const timeLeft = () => Math.max(500, Math.min(SOURCE_TIMEOUT_MS, deadline - Date.now()));
   // The base anime gives us the titles/year/type that other sources need.
-  const base = await cached(`animebase:${id}`, ONE_DAY, () => animeById(id));
+  // AniList first; Jikan only if AniList throws (and Jikan is not known to be down).
+  const base = await cached(`animebase:${id}`, ONE_DAY, async () => {
+    try {
+      return await withTimeout(animeBase(id), 6500);
+    } catch (err) {
+      if (err.status === 503) throw err;
+      console.error("AniList base failed, trying Jikan:", err.message);
+      if (deadline - Date.now() < 2000) throw err; // no time left for Jikan
+      return withTimeout(animeById(id), Math.min(4500, timeLeft()));
+    }
+  });
   if (!base) return null;
 
   // Wikidata first (it may know the Wikipedia article title) ...
-  const wikidataP = withTimeout(wikidataForMal(id));
+  const wikidataP = withTimeout(wikidataForMal(id), timeLeft());
   // ... then Wikipedia: use that title, or search by our titles if there is none.
   const wikipediaP = withTimeout(
     (async () => {
@@ -46,13 +59,15 @@ async function loadExtras(id) {
       let title = wd?.enWikipediaTitle || null;
       if (!title) title = await wikipediaSearch([base.titleEnglish, base.title]);
       return title ? await wikipediaSummary(title) : null;
-    })()
+    })(),
+    timeLeft()
   );
 
   const settled = await Promise.allSettled([
-    withTimeout(malReviews(id)),
-    withTimeout(animeExtras(id)),
-    withTimeout(kitsuExtras(id)),
+    // MAL reviews are a bonus: skip them completely when Jikan is known to be down.
+    jikanIsDown() ? Promise.reject(new Error("Jikan skipped")) : withTimeout(malReviews(id), timeLeft()),
+    withTimeout(animeExtras(id), timeLeft()),
+    withTimeout(kitsuExtras(id), timeLeft()),
     wikidataP,
     wikipediaP,
     withTimeout(tmdbExtras({
@@ -60,7 +75,7 @@ async function loadExtras(id) {
       titleEnglish: base.titleEnglish,
       year: base.year,
       type: base.type,
-    })),
+    }), timeLeft()),
   ]);
 
   // Every source failed (not just "no data"): do not cache this.

@@ -2,8 +2,8 @@
 import "../detail.css";
 
 const SOURCES = [
-  ["Jikan", "https://jikan.moe", "MyAnimeList data: anime info and reviews"],
-  ["AniList", "https://anilist.co", "banners, tags, reviews and watch links"],
+  ["Jikan", "https://jikan.moe", "MyAnimeList data: backup anime info and MyAnimeList reviews"],
+  ["AniList", "https://anilist.co", "main anime catalog, airing times, banners, tags, reviews and watch links"],
   ["Kitsu", "https://kitsu.app", "reviews and watch links"],
   ["Wikipedia (CC BY-SA 4.0)", "https://www.wikipedia.org", "background text"],
   ["Wikidata", "https://www.wikidata.org", "matching shows across sites"],

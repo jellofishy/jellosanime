@@ -1,7 +1,8 @@
 // The browser calls this function: /api/anime-detail?id=<malId>
-// It gets one anime's full details from Jikan, adds a "who it's for" blurb,
+// It gets one anime's full details from AniList (Jikan is only the backup), adds a "who it's for" blurb,
 // caches the answer for a day, and replies.
 
+import { animeBase } from "../adapters/anilist.js";
 import { animeById } from "../adapters/jikan.js";
 import { whoItsFor } from "../shared/whoItsFor.js";
 import { cached, jsonResponse } from "../shared/cache.js";
@@ -21,7 +22,17 @@ export default async (request) => {
   try {
     // Cache the finished answer (or "not found") so repeat visits are free.
     const result = await cached(`detail:${id}`, ONE_DAY, async () => {
-      const anime = await animeById(id);
+      // AniList first. If it throws (down / busy), try Jikan, which fails fast when it is known to be down.
+      let anime;
+      let source = "AniList";
+      try {
+        anime = await animeBase(id);
+      } catch (err) {
+        if (err.status === 503) throw err;
+        console.error("AniList detail failed, trying Jikan:", err.message);
+        source = "Jikan";
+        anime = await animeById(id);
+      }
       if (!anime) return null;
 
       return {
@@ -31,7 +42,7 @@ export default async (request) => {
         //   reviews: await reviewsFor(id),
         //   whereToWatch: await whereToWatch(id),
         // and add each source's name to `credits` below.
-        credits: ["Jikan"],
+        credits: [source],
       };
     });
 

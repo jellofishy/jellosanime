@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchAnimeList, fetchAiringToday, fetchTrending } from "../api.js";
 import { formatAirTime, hasAired, sortByAirTime } from "../airing.js";
-import AnimeRow, { AniListCredit, JikanCredit } from "../components/AnimeRow.jsx";
+import AnimeRow, { AniListCredit } from "../components/AnimeRow.jsx";
 import AnimeCard from "../components/AnimeCard.jsx";
 import Spotlight from "../components/Spotlight.jsx";
 import MoodChips from "../components/MoodChips.jsx";
@@ -76,8 +76,8 @@ export default function Home() {
         credit={<>{AniListCredit}. Times are shown in your local time.</>}
       />
       <AnimeRow title="Trending" items={trending.items} failed={trending.failed} credit={AniListCredit} />
-      <AnimeRow title="Top Anime" items={top.items} failed={top.failed} credit={JikanCredit} />
-      <AnimeRow title="This Season" items={season.items} failed={season.failed} credit={JikanCredit} />
+      <AnimeRow title="Top Anime" items={top.items} failed={top.failed} credit={AniListCredit} />
+      <AnimeRow title="This Season" items={season.items} failed={season.failed} credit={AniListCredit} />
     </>
   );
 }

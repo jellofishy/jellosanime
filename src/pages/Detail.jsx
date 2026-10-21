@@ -174,7 +174,7 @@ export default function Detail() {
       </p>
 
       <p className="muted small credits">
-        Data from <a className="link" href="https://jikan.moe" target="_blank" rel="noreferrer noopener">Jikan</a> (MyAnimeList)
+        Data from <a className="link" href="https://anilist.co" target="_blank" rel="noreferrer noopener">AniList</a>, with extra details from <a className="link" href="https://jikan.moe" target="_blank" rel="noreferrer noopener">Jikan</a> (MyAnimeList) when available
         {malOk && <> · <a className="link" href={anime.malUrl} target="_blank" rel="noreferrer noopener">View on MyAnimeList</a></>}
       </p>
     </article>

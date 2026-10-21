@@ -143,8 +143,9 @@ export function buildExtras({ base, anilist, kitsu, mal, wikidata, wikipedia, tm
     : null;
 
   // Credits: only sources that really gave us something.
-  const credits = ["Jikan"];
-  if (anilist) credits.push("AniList");
+  const credits = [];
+  if (anilist || base?.source === "anilist") credits.push("AniList");
+  if (base?.source === "jikan" || (mal && mal.length)) credits.push("Jikan");
   if (kitsu) credits.push("Kitsu");
   if (wikipedia) credits.push("Wikipedia");
   if (wikidata) credits.push("Wikidata");

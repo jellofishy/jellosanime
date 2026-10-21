@@ -10,8 +10,20 @@ const BASE = "https://api.jikan.moe/v4";
 // Stay safely under the limits: 400ms apart (2.5/sec) and 50 per minute.
 const limited = createLimiter({ gapMs: 400, perMinute: 50 });
 
+// Circuit breaker: if Jikan times out / can't be reached, skip it for 5 minutes so the
+// site doesn't wait on a dead service for every request.
+let downUntil = 0;
+export function jikanIsDown() {
+  return Date.now() < downUntil;
+}
+
 // Fetches one Jikan URL. If Jikan says "slow down" (429), wait and retry.
 async function jikanGet(path, params = {}) {
+  if (jikanIsDown()) {
+    const err = new Error("Jikan temporarily skipped");
+    err.status = 502;
+    throw err;
+  }
   const url = new URL(BASE + path);
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, v);
@@ -21,6 +33,7 @@ async function jikanGet(path, params = {}) {
   // Netlify cuts a function off after ~10 seconds, so keep the total under that:
   // each try gets 4 seconds, and we retry only once (on "slow down" or a server hiccup).
   let lastStatus = "no answer";
+  let unreachable = false; // true when the last problem was a timeout / network failure
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const res = await limited(() =>
@@ -29,20 +42,25 @@ async function jikanGet(path, params = {}) {
           signal: AbortSignal.timeout(4000),
         })
       );
-      if (res.ok) return res.json();
+      if (res.ok) { downUntil = 0; return res.json(); } // it answered: breaker closed
+      unreachable = false;
       lastStatus = res.status;
       // Write what Jikan said into Netlify's function logs so problems can be diagnosed.
       console.error(`Jikan ${res.status} for ${path}: ${(await res.text()).slice(0, 200)}`);
       if (res.status === 429 || res.status >= 500) { await sleep(800); continue; }
+      downUntil = 0; // a 4xx still means Jikan is alive
       const err = new Error(`Jikan error ${res.status}`);
       err.status = res.status; // lets callers spot a 404 (not found)
       throw err;
     } catch (e) {
-      if (e.status) throw e; // our own "Jikan error NNN" above
+      if (e.status) throw e; // our own "Jikan error NNN" above (or the limiter's "Busy")
+      unreachable = true;
       lastStatus = e.name === "TimeoutError" ? "timeout" : e.message; // network trouble or too slow
       console.error(`Jikan request failed for ${path}: ${lastStatus}`);
+      break; // timeout/network failure: do not wait for a second try, open the breaker
     }
   }
+  if (unreachable) downUntil = Date.now() + 5 * 60 * 1000;
   const err = new Error(`Jikan unavailable (${lastStatus})`);
   err.status = lastStatus === 429 ? 429 : 502;
   throw err;
