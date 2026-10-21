@@ -67,7 +67,8 @@ export default async (request) => {
     } else if (kind === "search") {
       // Only valid, allowed filters get through (see cleanFilters).
       const filters = cleanFilters(p);
-      const q = (p.get("q") || "").trim().slice(0, 100);
+      // Lower-case and tidy spaces so "Naruto" and "naruto " share one cached answer.
+      const q = (p.get("q") || "").trim().toLowerCase().replace(/\s+/g, " ").slice(0, 100);
       const cacheKey = `search:${q}:${page}:${limit}:${JSON.stringify(filters)}`;
       ttl = 60 * 60;
       data = await cached(cacheKey, ttl, () => searchAnime({ q, page, limit, ...filters }));

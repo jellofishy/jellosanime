@@ -54,6 +54,9 @@ export function jsonResponse(data, ttlSeconds = 3600, status = 200) {
   } else {
     headers["Cache-Control"] = "public, max-age=60";
     headers["Netlify-CDN-Cache-Control"] = `public, max-age=${ttlSeconds}, stale-while-revalidate=${ttlSeconds}`;
+    // Only these query parameters change the answer, so the CDN keeps one cached copy per
+    // combination and ignores random extra parameters (stops visitors bypassing the cache).
+    headers["Netlify-Vary"] = "query=kind|q|page|limit|type|status|rating|genres|start_date|end_date|year|season|order_by|sort|id";
   }
   return new Response(JSON.stringify(data), { status, headers });
 }
