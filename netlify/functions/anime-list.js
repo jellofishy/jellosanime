@@ -82,6 +82,7 @@ export default async (request) => {
       return jsonResponse({ error: "Busy, please try again in a moment" }, 1, 503);
     }
     // Don't let the CDN remember errors.
+    console.error("anime-list failed:", err.message);
     return jsonResponse({ error: "Could not load anime right now." }, 1, 502);
   }
 };

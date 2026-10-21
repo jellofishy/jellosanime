@@ -18,17 +18,34 @@ async function jikanGet(path, params = {}) {
   }
   url.searchParams.set("sfw", "true"); // ALWAYS hide adult content
 
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const res = await limited(() => fetch(url, { headers: { Accept: "application/json" } }));
-    if (res.status === 429) { await sleep(1500 * (attempt + 1)); continue; }
-    if (!res.ok) {
+  // Netlify cuts a function off after ~10 seconds, so keep the total under that:
+  // each try gets 4 seconds, and we retry only once (on "slow down" or a server hiccup).
+  let lastStatus = "no answer";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await limited(() =>
+        fetch(url, {
+          headers: { Accept: "application/json", "User-Agent": "jellosanime/1.0 (school project; https://jellosanime.netlify.app)" },
+          signal: AbortSignal.timeout(4000),
+        })
+      );
+      if (res.ok) return res.json();
+      lastStatus = res.status;
+      // Write what Jikan said into Netlify's function logs so problems can be diagnosed.
+      console.error(`Jikan ${res.status} for ${path}: ${(await res.text()).slice(0, 200)}`);
+      if (res.status === 429 || res.status >= 500) { await sleep(800); continue; }
       const err = new Error(`Jikan error ${res.status}`);
       err.status = res.status; // lets callers spot a 404 (not found)
       throw err;
+    } catch (e) {
+      if (e.status) throw e; // our own "Jikan error NNN" above
+      lastStatus = e.name === "TimeoutError" ? "timeout" : e.message; // network trouble or too slow
+      console.error(`Jikan request failed for ${path}: ${lastStatus}`);
     }
-    return res.json();
   }
-  throw new Error("Jikan is busy, try again soon");
+  const err = new Error(`Jikan unavailable (${lastStatus})`);
+  err.status = lastStatus === 429 ? 429 : 502;
+  throw err;
 }
 
 // Turns one raw Jikan anime into our shared shape.
