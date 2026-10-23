@@ -29,7 +29,7 @@ export default function Header() {
         </form>
         <Link to="/browse" className="nav-link">Browse</Link>
         <ThemeToggle />
-        {loginEnabled && (user ? (
+        {(user && loginEnabled ? (
           <>
             <Link to="/my-list" className="nav-link">My List</Link>
             <button className="nav-btn" onClick={() => supabase.auth.signOut()}>Log out</button>
