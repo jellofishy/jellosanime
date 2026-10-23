@@ -180,3 +180,35 @@ I had no internet access while building, so these were written from documentatio
 TMDB data is free for **non-commercial** use (a school project qualifies). If you add ads, charge money, or run it as a business, you need a separate agreement with TMDB. The site must show the TMDB attribution notice, and it already does in the footer: "This product uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB." TMDB also asks you not to keep their data longer than 6 months; jellosanime caches for hours only. Terms: https://www.themoviedb.org/api-terms-of-use
 
 Anime data comes from Jikan (MyAnimeList), AniList and Kitsu; Wikipedia text is CC BY-SA 4.0 and is credited next to every excerpt. jellosanime does not host or stream any episodes and only links to legal services.
+
+---
+
+## 9. Turn on "Continue with Google" (free, about 10 minutes)
+
+The button is already on the Log in page. It only works after you do these steps once.
+
+**A. Get a Google "client ID" and "client secret"**
+1. Go to https://console.cloud.google.com and sign in with your Google account.
+2. Top bar: click the project picker, then **New project**. Name it `jellosanime`, click **Create**, and make sure it is selected.
+3. Menu (three lines) > **APIs & Services** > **OAuth consent screen** (may be called **Google Auth Platform**). Click **Get started**.
+   - App name: `jellosanime`. User support email: your email. Audience: **External**. Contact email: your email. Agree and **Create**.
+4. In the same area open **Audience** and click **Publish app** (so anyone with a Google account can sign in, not just test users). Basic sign-in (email and profile) needs no Google review.
+5. Open **Clients** (or **Credentials**) > **Create client** (or **Create credentials > OAuth client ID**).
+   - Application type: **Web application**. Name: `jellosanime`.
+   - Under **Authorized redirect URIs** click **Add URI** and paste exactly:
+     `https://lfxqfrkyfbewonhpjqhv.supabase.co/auth/v1/callback`
+   - Click **Create**. Copy the **Client ID** and **Client secret** (keep the secret private; never put it in the code or on GitHub).
+
+**B. Give them to Supabase**
+1. Open https://supabase.com/dashboard, pick the project **Jello's Anime**.
+2. Left menu: **Authentication** > **Sign In / Providers** (or **Providers**) > **Google**.
+3. Switch it **on**, paste the Client ID and Client secret, click **Save**.
+
+**C. Tell Supabase your website address**
+1. **Authentication** > **URL Configuration**.
+2. **Site URL**: `https://jellosanime.netlify.app`
+3. **Redirect URLs**: click **Add URL** and add `https://jellosanime.netlify.app/**`, then **Save**.
+
+**D. Test:** open the site, tap **Log in**, tap **Continue with Google**, choose your Google account. You should land on **My List**, with **Log out** in the top bar.
+
+If you see a page that says `"provider is not enabled"`, step B was not saved. If Google says `redirect_uri_mismatch`, the URI in step A5 does not match exactly.
