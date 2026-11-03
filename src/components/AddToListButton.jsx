@@ -2,12 +2,16 @@
 // It saves a row in the Supabase `my_list` table (user_id is filled in by the database).
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
+import { useTheme } from "../theme/ThemeContext.jsx";
+import { displayTitle } from "../titles.js";
 import { supabase } from "../auth/supabaseClient.js";
 import { useAuth } from "../auth/AuthContext.jsx";
 import "../detail.css";
 
 export default function AddToListButton({ anime }) {
   const { user, loading } = useAuth();
+  const { titleLang } = useTheme();
   const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -52,7 +56,7 @@ export default function AddToListButton({ anime }) {
     setBusy(false);
   }
 
-  const name = anime.titleEnglish || anime.title || "this anime";
+  const name = displayTitle(anime, titleLang) || "this anime";
   return (
     <div className="list-btn-wrap">
       {/* Heart toggle: aria-pressed tells screen readers if it is saved */}
@@ -64,9 +68,7 @@ export default function AddToListButton({ anime }) {
         aria-pressed={saved}
         aria-label={saved ? `Remove ${name} from My List` : `Add ${name} to My List`}
       >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 21s-7.5-4.6-9.6-9.1C1 8.8 2.7 5 6.3 5c2.1 0 3.8 1.2 4.7 2.7h2C13 6.2 15.6 5 17.7 5c3.6 0 5.3 3.8 3.9 6.9C19.5 16.4 12 21 12 21z" />
-        </svg>
+        <Heart className="icon" aria-hidden="true" />
         <span>{saved ? "In My List" : "Add to My List"}</span>
       </button>
       {error && <p className="muted small">{error}</p>}

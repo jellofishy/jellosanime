@@ -5,8 +5,11 @@
 //   onRetry = function that re-runs the failed request (the "Retry" button calls it)
 //   renderCard(item) = optional, to draw each card differently (Airing Today does this)
 //   credit = optional small "Data from ..." line shown under the row
+//   seeAllTo = optional link target for the "See all" link next to the title
 // The round arrow buttons scroll by one visible width (they are hidden on touch screens).
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import AnimeCard from "./AnimeCard.jsx";
 import ErrorState from "./ErrorState.jsx";
 import "../home.css";
@@ -15,7 +18,7 @@ function reducedMotion() {
   try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch { return true; }
 }
 
-export default function AnimeRow({ title, items, failed, credit, emptyText, renderCard, onRetry }) {
+export default function AnimeRow({ title, items, failed, credit, emptyText, renderCard, onRetry, seeAllTo }) {
   const loading = !items && !failed;
   const scroller = useRef(null);
   const [canLeft, setCanLeft] = useState(false);
@@ -45,16 +48,21 @@ export default function AnimeRow({ title, items, failed, credit, emptyText, rend
   const headingId = `row-${title.replace(/\W+/g, "-").toLowerCase()}`;
   return (
     <section className="anime-row" aria-labelledby={headingId}>
-      <h2 id={headingId} className="t-h2 row-title">{title}</h2>
+      <div className="row-head">
+        <h2 id={headingId} className="t-h2 row-title">{title}</h2>
+        {seeAllTo && (
+          <Link to={seeAllTo} className="row-see-all" aria-label={`See all ${title}`}>
+            See all <ChevronRight className="icon" aria-hidden="true" />
+          </Link>
+        )}
+      </div>
       {failed && <ErrorState variant="strip" what={title} onRetry={onRetry} />}
-      {/* Glass placeholders while loading (same size as real cards, so nothing jumps) */}
+      {/* Grey placeholders while loading (same size as real cards, so nothing jumps) */}
       {loading && (
         <div className="row-track" aria-busy="true" aria-label={`Loading ${title}`}>
           {Array.from({ length: 7 }, (_, i) => (
             <div className="anime-card anime-card-skeleton" key={i} aria-hidden="true">
               <div className="anime-art skeleton" />
-              <div className="skeleton skeleton-line" />
-              <div className="skeleton skeleton-line short" />
             </div>
           ))}
         </div>
@@ -64,18 +72,18 @@ export default function AnimeRow({ title, items, failed, credit, emptyText, rend
       )}
       {hasCards && (
         <div className="row-wrap fade-in">
-          <button type="button" className="row-arrow row-arrow-left glass-bar" aria-label={`Scroll ${title} left`}
+          <button type="button" className="row-arrow row-arrow-left" aria-label={`Scroll ${title} left`}
             onClick={() => page(-1)} disabled={!canLeft}>
-            <span aria-hidden="true">‹</span>
+            <ChevronLeft className="icon" aria-hidden="true" />
           </button>
           <div className="row-track" ref={scroller} onScroll={updateArrows}>
             {items.map((a) =>
               renderCard ? renderCard(a) : <AnimeCard key={a.malId} anime={a} />
             )}
           </div>
-          <button type="button" className="row-arrow row-arrow-right glass-bar" aria-label={`Scroll ${title} right`}
+          <button type="button" className="row-arrow row-arrow-right" aria-label={`Scroll ${title} right`}
             onClick={() => page(1)} disabled={!canRight}>
-            <span aria-hidden="true">›</span>
+            <ChevronRight className="icon" aria-hidden="true" />
           </button>
         </div>
       )}

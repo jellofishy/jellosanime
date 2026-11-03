@@ -1,6 +1,7 @@
 // "Where to watch": LEGAL links only, taken from the server's allow-list.
 // Props: status ("loading" | "ok" | "error"), extras (the API answer or null), onRetry (re-runs the request).
 // Never a dead end: with no known link we say so and still offer official search pages.
+import { ExternalLink } from "lucide-react";
 import { isHttps, safeUrl, asArray } from "../safeUrl.js";
 import ErrorState from "./ErrorState.jsx";
 import "../detail.css";
@@ -15,7 +16,7 @@ function LinkButtons({ links, kind = "btn-primary" }) {
     <div className="btn-row">
       {goodLinks(links).map((l) => (
         <a key={l.service + l.url} className={`btn ${kind}`} href={l.url} target="_blank" rel="noopener noreferrer">
-          {l.service}
+          {l.service} <ExternalLink className="icon" aria-hidden="true" />
         </a>
       ))}
     </div>
@@ -54,22 +55,22 @@ export default function WhereToWatch({ status, extras, onRetry }) {
     body = (
       <>
         {nFree === 0 && nSub === 0 ? (
-          <div className="watch-group glass">
+          <div className="watch-group">
             <h3 className="t-h3">No legal streaming link known yet</h3>
             <p>We only list official services. When one is confirmed for your region, it will appear here.</p>
             {searchBlock}
           </div>
         ) : (
           <div className="watch-groups">
-            <div className="watch-group glass">
+            <div className="watch-group">
               <h3 className="t-h3">Free (legal, ad-supported)</h3>
               {nFree > 0 ? <LinkButtons links={w.free} /> : <p className="muted">No link known yet</p>}
             </div>
-            <div className="watch-group glass">
+            <div className="watch-group">
               <h3 className="t-h3">Subscription</h3>
               {nSub > 0 ? <LinkButtons links={w.subscription} /> : <p className="muted">No link known yet</p>}
             </div>
-            {nFree === 0 && searchBlock && <div className="watch-group glass watch-wide">{searchBlock}</div>}
+            {nFree === 0 && searchBlock && <div className="watch-group watch-wide">{searchBlock}</div>}
           </div>
         )}
         <p className="muted t-caption">

@@ -1,12 +1,21 @@
-/* Login page: one centered frosted-glass sheet. Only token variables. */
-.login-wrap { display: flex; justify-content: center; padding: var(--s-6) 0 var(--s-7); }
+/* Login page: one flat centered card. Only token variables. */
+.login-wrap { display: flex; justify-content: center; padding: var(--s-5) 0 var(--s-7); }
 .login-card { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: var(--s-4);
-  padding: var(--s-6) var(--s-5); border-radius: var(--r-xl); box-shadow: var(--shadow-glass); }
-.login-title { margin: 0; }
-.login-or { text-align: center; margin: 0; font-size: 14px; }
-.login-message { margin: 0; }
-.login-links { margin: 0; text-align: center; }
-/* Google button: neutral glass so it reads in light and dark */
-.google-btn { gap: var(--s-3); background: var(--glass-card-bg); color: var(--text);
-  border: 1.5px solid color-mix(in srgb, var(--muted) 60%, transparent); }
-@media (min-width: 700px) { .login-card { padding: var(--s-7) var(--s-6); } .login-wrap { padding-top: var(--s-7); } }
+  padding: var(--s-5); background: var(--card); border: 1px solid var(--border); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1); }
+.login-title { margin: 0; color: var(--text); }
+.login-or { display: flex; align-items: center; gap: var(--s-3); margin: 0; font-size: 14px; color: var(--muted); }
+.login-or::before, .login-or::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.login-message { margin: 0; color: var(--text-2); }
+.login-links { margin: 0; text-align: center; color: var(--muted); }
+.login-label { display: block; font-weight: 600; font-size: 14px; color: var(--text-2); margin-bottom: var(--s-1); }
+.login-input { width: 100%; min-height: 48px; padding: 0 var(--s-3); font: inherit; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-md); }
+.login-input::placeholder { color: var(--muted); opacity: 1; }
+.login-input:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+.login-card .btn-lg { width: 100%; }
+/* Google button: neutral so it reads in both themes */
+.google-btn { width: 100%; gap: var(--s-3); background: var(--card-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-pill); min-height: 48px; font-weight: 600; }
+.google-btn:hover { border-color: var(--accent); }
+@media (min-width: 700px) { .login-card { padding: var(--s-6); } .login-wrap { padding-top: var(--s-7); } }

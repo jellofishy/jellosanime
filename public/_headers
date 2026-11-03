@@ -13,7 +13,7 @@
 # the ONLY frame allowed is the YouTube privacy player; the browser may only talk
 # to our own site (/api) and our Supabase project.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-qwSC7aupEs9XOHA1iNRXlgyKFKc9I/f62JgZGB02U9o='; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; frame-src https://www.youtube-nocookie.com; connect-src 'self' https://lfxqfrkyfbewonhpjqhv.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-WVsLWbAP36PqgycqWEnCLnBT4y39vA2jp5JlKi6jaw4='; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; frame-src https://www.youtube-nocookie.com; connect-src 'self' https://lfxqfrkyfbewonhpjqhv.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY

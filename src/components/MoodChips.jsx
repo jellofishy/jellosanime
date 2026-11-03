@@ -1,4 +1,4 @@
-// Quick-pick mood chips (D6). Each one opens Browse with matching genres already selected.
+// Quick-pick mood chips. Each one opens Browse with matching genres already selected.
 import { Link } from "react-router-dom";
 import { MOODS, moodLink } from "../browseFilters.js";
 import "../home.css";

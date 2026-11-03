@@ -1,125 +1,179 @@
-/* jellosanime design tokens + shared utility classes: "Frosted Jelly".
-   Binding spec: docs/FROSTED_JELLY.md (the TOKEN CONTRACT there lists every name below).
-   :root                    = LIGHT theme (the default look).
-   :root[data-theme="dark"] = DARK theme (same style, night colors).
-   This is the ONLY file that should contain hex colors. Everything else uses var(--name). */
+/* jellosanime design tokens + shared utility classes: "Midnight" (dark by default, light available).
+   Binding spec: docs/DARK_REDESIGN_SPEC.md (the TOKEN CONTRACT there lists every name below).
 
-:root {
+   How the look is chosen (set on the <html> tag by index.html and by src/theme/ThemeContext.jsx):
+     data-theme  = "dark" (default) | "light"
+     data-accent = "pink" (default) | "purple" | "blue" | "green" | "orange"
+   Mode sets the greys (background, cards, text). Accent sets the colored parts (buttons, links, focus).
+   This is the ONLY CSS file that should contain hex colors. Everything else uses var(--name).
+   All accent shades were checked with a contrast script: accent text >= 4.5:1 on the page and cards,
+   and the text on an accent button >= 4.5:1. */
+
+/* ============================================================
+   1. MODE: dark (default) and light
+   ============================================================ */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0F0F12;                       /* page */
+  --card: #1A1A1F;                     /* cards, panels */
+  --card-2: #22222A;                   /* raised card, hover */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: #6B6B78;            /* outlines that must be seen (3:1 on --card) */
+  --text: #FFFFFF;                     /* headings */
+  --text-2: #D4D4D8;                   /* body text */
+  --muted: #A1A1AA;                    /* secondary text (6.7:1 on --card) */
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --scrim: rgba(0, 0, 0, 0.6);         /* behind sheets and dialogs */
+  --poster-scrim: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+
+  /* Age badges: -bg fill, -fg text (always shown with a word) */
+  --age-everyone-bg: #14352A; --age-everyone-fg: #86EFAC;
+  --age-kids-bg: #172F52;     --age-kids-fg: #93C5FD;
+  --age-teens-bg: #43330F;    --age-teens-fg: #FCD34D;
+  --age-mature-bg: #7F1D3A;   --age-mature-fg: #FFFFFF;
+  --age-unknown-bg: #2A2A33;  --age-unknown-fg: #D4D4D8;
+
+  /* Status colors */
+  --success: #4ADE80;
+  --warn: #FBBF24;
+  --danger: #FCA5A5;
+  --star: #FBBF24;
+
+  --sheen-a: rgba(255, 255, 255, 0.04);   /* skeleton shimmer */
+  --sheen-b: rgba(255, 255, 255, 0.10);
+}
+
+:root[data-theme="light"] {
   color-scheme: light;
 
-  /* ---------- Colors (light) ---------- */
-  --bg: #FFF5F8;              /* Base: page ground */
-  --text: #3A2A38;            /* Ink */
-  --muted: #6B5668;           /* Ink soft: meta text */
-  --accent: #C2185B;          /* Pink: links, accent */
-  --accent2: #6D4AE0;         /* Lavender: secondary, focus */
-  --accent-contrast: #FFFFFF; /* text ON an accent button */
-  --accent2-contrast: #FFFFFF;
-  --accent-soft: #FFD3E4;     /* soft pink fill (selected chip, focus ring base) */
-  --glow-1: #FFD3E4;          /* Blush */
-  --glow-2: #FFE2D1;          /* Peach */
-  --glow-3: #D6EBFF;          /* Sky */
-  --glow-4: #FFD3E4;          /* Blush again, bottom corner */
-  --accent-gradient: linear-gradient(135deg, #C2185B 0%, #6D4AE0 100%); /* buttons, active tabs, score badges ONLY */
+  --bg: #F7F7F9;
+  --card: #FFFFFF;
+  --card-2: #F0F0F4;
+  --border: rgba(15, 15, 18, 0.10);
+  --border-strong: #8A8A96;
+  --text: #0F0F12;
+  --text-2: #3F3F46;
+  --muted: #52525B;
 
-  /* Mesh: four soft radial glows on the base color. Used on <body>, fixed (does not scroll). */
-  --mesh:
-    radial-gradient(60vmax 50vmax at 8% 4%, var(--glow-1) 0%, transparent 60%),
-    radial-gradient(55vmax 45vmax at 95% 10%, var(--glow-2) 0%, transparent 60%),
-    radial-gradient(60vmax 50vmax at 5% 96%, var(--glow-3) 0%, transparent 62%),
-    radial-gradient(55vmax 45vmax at 96% 92%, var(--glow-4) 0%, transparent 60%),
-    linear-gradient(var(--bg), var(--bg));
+  --shadow-1: 0 1px 2px rgba(15, 15, 18, 0.06), 0 2px 8px rgba(15, 15, 18, 0.05);
+  --shadow-2: 0 8px 28px rgba(15, 15, 18, 0.14);
+  --scrim: rgba(15, 15, 18, 0.45);
+  --poster-scrim: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
 
-  /* ---------- Glass recipes (fill / blur / border) ---------- */
-  --glass-saturate: 160%;
-  --glass-card-bg: rgba(255, 255, 255, 0.56);   --glass-card-blur: 20px;  --glass-card-border: rgba(255, 255, 255, 0.75);
-  --glass-bar-bg: rgba(255, 255, 255, 0.68);    --glass-bar-blur: 28px;   --glass-bar-border: rgba(255, 255, 255, 0.80);
-  --glass-art-bg: rgba(255, 255, 255, 0.76);    --glass-art-blur: 24px;   --glass-art-border: rgba(255, 255, 255, 0.85);
-  --glass-sheet-bg: rgba(255, 255, 255, 0.86);  --glass-sheet-blur: 32px; --glass-sheet-border: rgba(255, 255, 255, 0.90);
-  /* Same fills at 92% opacity, used only when the browser cannot blur (see @supports below) */
-  --glass-card-bg-solid: rgba(255, 255, 255, 0.92);
-  --glass-bar-bg-solid: rgba(255, 255, 255, 0.92);
-  --glass-art-bg-solid: rgba(255, 255, 255, 0.92);
-  --glass-sheet-bg-solid: rgba(255, 255, 255, 0.92);
+  --age-everyone-bg: #D1F2E0; --age-everyone-fg: #0B5E3A;
+  --age-kids-bg: #DBEAFE;     --age-kids-fg: #1E40AF;
+  --age-teens-bg: #FEF3C7;    --age-teens-fg: #7A3F00;
+  --age-mature-bg: #9F1239;   --age-mature-fg: #FFFFFF;
+  --age-unknown-bg: #E4E4E9;  --age-unknown-fg: #3F3F46;
 
-  /* Shadows */
-  --shadow-glass: 0 10px 36px rgba(194, 24, 91, 0.12), 0 2px 6px rgba(58, 42, 56, 0.06);
-  --shadow-glass-hover: 0 20px 48px rgba(194, 24, 91, 0.18), 0 4px 10px rgba(58, 42, 56, 0.08);
+  --success: #166534;
+  --warn: #8A5A00;
+  --danger: #B91C1C;
+  --star: #8F5E00;
 
-  /* Effects */
-  --focus-soft: rgba(109, 74, 224, 0.28);   /* the 3px soft ring around the 2px focus line */
-  --shimmer-color: rgba(255, 255, 255, 0.12);
-  --sheen-a: rgba(194, 24, 91, 0.16);       /* skeleton sheen: pink ... */
-  --sheen-b: rgba(109, 74, 224, 0.16);      /* ... to lavender */
-  --scrim: rgba(58, 42, 56, 0.40);          /* behind sheets / modals */
-  --chip-bg: rgba(255, 255, 255, 0.62);
-  --chip-border: rgba(255, 255, 255, 0.85);
-  --chip-active-bg: rgba(194, 24, 91, 0.12);
-  --field-bg: rgba(255, 255, 255, 0.62);
-  --field-border: rgba(194, 24, 91, 0.28);
-  --border: rgba(194, 24, 91, 0.16);        /* decorative lines */
-  --border-strong: #B0829B;                 /* outlines that must be seen (3:1) */
+  --sheen-a: rgba(15, 15, 18, 0.03);
+  --sheen-b: rgba(15, 15, 18, 0.08);
+}
+
+/* ============================================================
+   2. ACCENT x MODE
+   --accent          colored text, borders, icons (readable on --bg, --card, --card-2)
+   --accent-fill     button / active fill
+   --accent-contrast text ON --accent-fill
+   --accent-soft     tinted background (selected chip)
+   --focus-ring      keyboard focus ring color
+   Dark is the default, so the plain [data-accent] rules are the dark ones.
+   ============================================================ */
+:root,
+:root[data-accent="pink"]                          { --accent: #F472B6; --accent-fill: #EC4899; --accent-contrast: #0F0F12; --accent-soft: rgba(236, 72, 153, 0.18); --focus-ring: #F472B6; }
+:root[data-accent="purple"]                        { --accent: #A78BFA; --accent-fill: #9168F8; --accent-contrast: #0F0F12; --accent-soft: rgba(139, 92, 246, 0.20); --focus-ring: #A78BFA; }
+:root[data-accent="blue"]                          { --accent: #60A5FA; --accent-fill: #3B82F6; --accent-contrast: #0F0F12; --accent-soft: rgba(59, 130, 246, 0.20); --focus-ring: #60A5FA; }
+:root[data-accent="green"]                         { --accent: #4ADE80; --accent-fill: #22C55E; --accent-contrast: #0F0F12; --accent-soft: rgba(34, 197, 94, 0.18);  --focus-ring: #4ADE80; }
+:root[data-accent="orange"]                        { --accent: #FB923C; --accent-fill: #F97316; --accent-contrast: #0F0F12; --accent-soft: rgba(249, 115, 22, 0.18); --focus-ring: #FB923C; }
+
+/* Light mode: darker accent so text on white is readable; buttons use white text */
+:root[data-theme="light"],
+:root[data-theme="light"][data-accent="pink"]      { --accent: #BE185D; --accent-fill: #BE185D; --accent-contrast: #FFFFFF; --accent-soft: rgba(190, 24, 93, 0.10);  --focus-ring: #BE185D; }
+:root[data-theme="light"][data-accent="purple"]    { --accent: #6D28D9; --accent-fill: #6D28D9; --accent-contrast: #FFFFFF; --accent-soft: rgba(109, 40, 217, 0.10); --focus-ring: #6D28D9; }
+:root[data-theme="light"][data-accent="blue"]      { --accent: #1D4ED8; --accent-fill: #1D4ED8; --accent-contrast: #FFFFFF; --accent-soft: rgba(29, 78, 216, 0.10);  --focus-ring: #1D4ED8; }
+:root[data-theme="light"][data-accent="green"]     { --accent: #137A38; --accent-fill: #137A38; --accent-contrast: #FFFFFF; --accent-soft: rgba(19, 122, 56, 0.11);  --focus-ring: #137A38; }
+:root[data-theme="light"][data-accent="orange"]    { --accent: #BA3C08; --accent-fill: #BA3C08; --accent-contrast: #FFFFFF; --accent-soft: rgba(186, 60, 8, 0.10);   --focus-ring: #BA3C08; }
+
+/* ============================================================
+   3. Things that do not change with mode or accent
+   ============================================================ */
+:root {
+  /* Radii */
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+  --r-xs: 6px; --r-xl: 20px;   /* old names, kept for unmigrated CSS */
+
+  /* Spacing */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+  /* Fonts */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-sans);   /* old names, kept */
+  --font-body: var(--font-sans);
+
+  /* Type scale (phone sizes in the media query below) */
+  --fs-display: 56px;  --lh-display: 1.05;  --ls-display: -0.03em;
+  --fs-h1: 40px;       --lh-h1: 1.1;        --ls-h1: -0.02em;
+  --fs-h2: 28px;       --lh-h2: 1.2;        --ls-h2: -0.015em;
+  --fs-h3: 20px;       --lh-h3: 1.3;
+  --fs-body-l: 18px;   --lh-body-l: 1.65;
+  --fs-body: 16px;     --lh-body: 1.6;
+  --fs-label: 14px;    --lh-label: 1.3;
+  --fs-caption: 13px;  --lh-caption: 1.4;
+  --fs-eyebrow: 12px;  --lh-eyebrow: 1.2;   --ls-eyebrow: 0.08em;
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: 16px;
+  --header-h: 60px;
+  --tap: 44px;   /* minimum touch target */
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-press: 120ms; --t-hover: 180ms; --t-panel: 240ms; --t-sheet: 320ms;
 
   /* Google sign-in button (brand button, stays white) */
   --google-bg: #FFFFFF; --google-fg: #3C4043; --google-border: #DADCE0;
 
-  /* Status colors */
-  --success: #1B7F4B;
-  --warn: #8A5A00;
-  --danger: #A3122F;
-  --star: #8F5E00;
-
-  /* Age badges: -bg is the fill, -fg is the text (always shown with a word) */
-  --age-everyone-bg: #D9F5EA; --age-everyone-fg: #0B5E48;
-  --age-kids-bg: #DDEBFF;     --age-kids-fg: #174E9C;
-  --age-teens-bg: #FFE9C7;    --age-teens-fg: #7A3F00;
-  --age-mature-bg: #8E1037;   --age-mature-fg: #FFFFFF;
-  --age-unknown-bg: #EDE6EE;  --age-unknown-fg: #4F3F55;
-
-  /* ---------- Radii ---------- */
-  --r-xs: 8px; --r-sm: 14px; --r-md: 20px; --r-lg: 24px; --r-xl: 28px; --r-pill: 999px;
-
-  /* ---------- Spacing ---------- */
-  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
-  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
-
-  /* ---------- Motion ---------- */
-  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --t-press: 120ms; --t-hover: 200ms; --t-panel: 280ms; --t-sheet: 400ms;
-
-  /* ---------- Fonts ---------- */
-  --font-display: "Fredoka", "Nunito", ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-
-  /* ---------- Type scale (phone sizes are set in the media query at the bottom of this block) ---------- */
-  --fs-display: 80px;  --lh-display: 0.98;  --ls-display: -0.02em;
-  --fs-h1: 48px;       --lh-h1: 1.05;       --ls-h1: -0.01em;
-  --fs-h2: 32px;       --lh-h2: 1.15;
-  --fs-h3: 22px;       --lh-h3: 1.25;
-  --fs-body-l: 18px;   --lh-body-l: 1.65;
-  --fs-body: 16px;     --lh-body: 1.6;
-  --fs-label: 15px;    --lh-label: 1.3;
-  --fs-caption: 13px;  --lh-caption: 1.35;
-  --fs-eyebrow: 12px;  --lh-eyebrow: 1.2;   --ls-eyebrow: 0.08em;
-
-  /* ---------- Layout ---------- */
-  --container: 1200px;
-  --gutter: 16px;
-  --header-h: 60px;
-  --tap: 44px;               /* minimum touch target */
-
   /* ---------- Old names kept so pages not yet updated keep working (aliases) ---------- */
-  --panel: var(--glass-card-bg);
-  --panel-2: var(--chip-active-bg);
-  --header-bg: var(--glass-bar-bg);
+  --accent2: var(--accent);
+  --accent2-contrast: var(--accent-contrast);
+  --accent-gradient: var(--accent-fill);          /* flat fill instead of the old pink-lavender gradient */
+  --mesh: none;                                    /* no mesh background any more */
+  --glow-1: transparent; --glow-2: transparent; --glow-3: transparent; --glow-4: transparent;
+  --panel: var(--card);
+  --panel-2: var(--card-2);
+  --header-bg: var(--card);
   --overlay: var(--scrim);
-  --focus-ring: var(--accent);
-  --hero-gradient: linear-gradient(135deg, var(--glow-1) 0%, var(--glow-3) 100%);
+  --hero-gradient: var(--card);
   --skeleton-a: var(--sheen-a);
   --skeleton-b: var(--sheen-b);
-  --shadow-1: 0 2px 6px rgba(58, 42, 56, 0.06);
-  --shadow-2: var(--shadow-glass);
-  --shadow-3: var(--shadow-glass-hover);
+  --glass-saturate: 100%;
+  --glass-card-bg: var(--card);   --glass-card-blur: 0px;  --glass-card-border: var(--border);
+  --glass-bar-bg: var(--card);    --glass-bar-blur: 0px;   --glass-bar-border: var(--border);
+  --glass-art-bg: var(--card-2);  --glass-art-blur: 0px;   --glass-art-border: var(--border);
+  --glass-sheet-bg: var(--card);  --glass-sheet-blur: 0px; --glass-sheet-border: var(--border);
+  --glass-card-bg-solid: var(--card); --glass-bar-bg-solid: var(--card);
+  --glass-art-bg-solid: var(--card-2); --glass-sheet-bg-solid: var(--card);
+  --shadow-glass: var(--shadow-1);
+  --shadow-glass-hover: var(--shadow-2);
+  --shadow-3: var(--shadow-2);
+  --focus-soft: var(--accent-soft);
+  --shimmer-color: transparent;
+  --chip-bg: var(--card);
+  --chip-border: var(--border);
+  --chip-active-bg: var(--accent-soft);
+  --field-bg: var(--card);
+  --field-border: var(--border-strong);
   --badge-everyone-bg: var(--age-everyone-bg); --badge-everyone-fg: var(--age-everyone-fg);
   --badge-kids-bg: var(--age-kids-bg);         --badge-kids-fg: var(--age-kids-fg);
   --badge-teens-bg: var(--age-teens-bg);       --badge-teens-fg: var(--age-teens-fg);
@@ -131,236 +185,160 @@
   --leading: 1.6;
   --space-1: var(--s-1); --space-2: var(--s-2); --space-3: var(--s-3); --space-4: var(--s-4);
   --space-5: var(--s-5); --space-6: var(--s-6); --space-7: var(--s-7); --space-8: var(--s-8);
-  --radius-sm: var(--r-xs); --radius-md: var(--r-sm); --radius-lg: var(--r-lg); --radius-pill: var(--r-pill);
+  --radius-sm: var(--r-sm); --radius-md: var(--r-md); --radius-lg: var(--r-lg); --radius-pill: var(--r-pill);
   --ease-soft: var(--ease);
   --dur-fast: var(--t-press); --dur: var(--t-hover); --dur-slow: var(--t-sheet);
 }
 
-/* Phone type scale: Display 44, H1 32, H2 24; body stays 16 */
+/* Phone type scale */
 @media (max-width: 599px) {
   :root {
-    --fs-display: 44px;
-    --fs-h1: 32px;
-    --fs-h2: 24px;
+    --fs-display: 36px;
+    --fs-h1: 30px;
+    --fs-h2: 22px;
+    --fs-h3: 18px;
   }
 }
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  --bg: #1A1322;              /* Plum */
-  --text: #F7ECF3;            /* Moon */
-  --muted: #CDB9CF;           /* Moon soft */
-  --accent: #FF8FBB;
-  --accent2: #BBA6FF;
-  --accent-contrast: #2A0F1D;
-  --accent2-contrast: #1A1322;
-  --accent-soft: #4A2A40;
-  --glow-1: #7A1E52;          /* Magenta glow */
-  --glow-2: #3B2A9A;          /* Indigo glow */
-  --glow-3: #3B2A9A;
-  --glow-4: #7A1E52;
-  --accent-gradient: linear-gradient(135deg, #FF8FBB 0%, #BBA6FF 100%);
-
-  /* Dark glass: plum #2C1E3A and a deeper plum #20152B */
-  --glass-card-bg: rgba(44, 30, 58, 0.55);   --glass-card-border: rgba(255, 255, 255, 0.12);
-  --glass-bar-bg: rgba(32, 21, 43, 0.66);    --glass-bar-border: rgba(255, 255, 255, 0.12);
-  --glass-art-bg: rgba(44, 30, 58, 0.66);    --glass-art-border: rgba(255, 255, 255, 0.14);
-  --glass-sheet-bg: rgba(32, 21, 43, 0.86);  --glass-sheet-border: rgba(255, 255, 255, 0.14);
-  --glass-card-bg-solid: rgba(44, 30, 58, 0.92);
-  --glass-bar-bg-solid: rgba(32, 21, 43, 0.92);
-  --glass-art-bg-solid: rgba(44, 30, 58, 0.92);
-  --glass-sheet-bg-solid: rgba(32, 21, 43, 0.92);
-
-  --shadow-glass: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 143, 187, 0.06);
-  --shadow-glass-hover: 0 22px 52px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 143, 187, 0.10);
-
-  --focus-soft: rgba(187, 166, 255, 0.32);
-  --shimmer-color: rgba(255, 255, 255, 0.12);
-  --sheen-a: rgba(255, 143, 187, 0.16);
-  --sheen-b: rgba(187, 166, 255, 0.16);
-  --scrim: rgba(0, 0, 0, 0.40);
-  --chip-bg: rgba(44, 30, 58, 0.62);
-  --chip-border: rgba(255, 255, 255, 0.14);
-  --chip-active-bg: rgba(255, 143, 187, 0.18);
-  --field-bg: rgba(44, 30, 58, 0.62);
-  --field-border: rgba(255, 143, 187, 0.34);
-  --border: rgba(255, 255, 255, 0.12);
-  --border-strong: #8F78AA;
-
-  --success: #6FDC9C;
-  --warn: #FFC76B;
-  --danger: #FFA3B5;
-  --star: #FFD36B;
-
-  /* Dark age badges: same words, readable fills on glass */
-  --age-everyone-bg: #1E3B2B; --age-everyone-fg: #8FE8B2;
-  --age-kids-bg: #1C3350;     --age-kids-fg: #9CCBFF;
-  --age-teens-bg: #4A3814;    --age-teens-fg: #FFD58A;
-  --age-mature-bg: #8E1037;   --age-mature-fg: #FFFFFF;
-  --age-unknown-bg: #3A2D45;  --age-unknown-fg: #D5C2DB;
-
-  --shadow-1: 0 2px 6px rgba(0, 0, 0, 0.35);
-}
+@media (min-width: 900px) { :root { --gutter: 32px; } }
 
 /* ============================================================
-   Base: page background, focus ring
+   4. Base
    ============================================================ */
 body {
   background-color: var(--bg);
-  background-image: var(--mesh);
-  background-attachment: fixed;   /* the glow stays put while the page scrolls */
-  background-repeat: no-repeat;
+  background-image: none;
+  color: var(--text-2);
+  font-family: var(--font-sans);
   min-height: 100vh;
 }
 
-/* Smooth color change when the theme button is pressed (ThemeToggle adds "theme-fade" to <html> for ~400ms). */
+/* Soft color change when the mode flips (ThemeContext adds "theme-fade" to <html> briefly). */
 html.theme-fade, html.theme-fade * {
   transition: background-color var(--t-hover) var(--ease), color var(--t-hover) var(--ease),
     border-color var(--t-hover) var(--ease) !important;
 }
 
-/* Keyboard focus: 2px accent line + 3px soft ring. */
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.btn:focus-visible, .chip:focus-visible, .theme-toggle:focus-visible, .back-to-top:focus-visible,
-input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 0;
-  box-shadow: 0 0 0 5px var(--focus-soft);
-}
+/* Keyboard focus: a clear accent ring. */
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 /* ============================================================
-   Glass recipes. One class per recipe; the text color stays --text.
+   5. Cards. The old .glass* names are now FLAT cards (no blur).
    ============================================================ */
-.glass, .glass-bar, .glass-art, .glass-sheet {
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-glass);
-  color: var(--text);
+.card, .glass, .glass-bar, .glass-art, .glass-sheet {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  box-shadow: none;
 }
-.glass       { --glass-bg: var(--glass-card-bg);  --glass-blur: var(--glass-card-blur);  --glass-border: var(--glass-card-border);  border-radius: var(--r-md); }
-.glass-bar   { --glass-bg: var(--glass-bar-bg);   --glass-blur: var(--glass-bar-blur);   --glass-border: var(--glass-bar-border);   border-radius: var(--r-lg); }
-.glass-art   { --glass-bg: var(--glass-art-bg);   --glass-blur: var(--glass-art-blur);   --glass-border: var(--glass-art-border);   border-radius: var(--r-md); }
-.glass-sheet { --glass-bg: var(--glass-sheet-bg); --glass-blur: var(--glass-sheet-blur); --glass-border: var(--glass-sheet-border); border-radius: var(--r-xl); }
-
-/* Browsers that cannot blur: use a nearly solid fill so text stays readable. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass       { --glass-bg: var(--glass-card-bg-solid); }
-  .glass-bar   { --glass-bg: var(--glass-bar-bg-solid); }
-  .glass-art   { --glass-bg: var(--glass-art-bg-solid); }
-  .glass-sheet { --glass-bg: var(--glass-sheet-bg-solid); }
-}
+.card, .glass { border-radius: var(--r-lg); }
+.glass-bar { border-radius: var(--r-lg); }
+.glass-art { border-radius: var(--r-md); background: var(--card-2); }
+.glass-sheet { border-radius: var(--r-lg); box-shadow: var(--shadow-2); }
+.card-raised { background: var(--card-2); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-1); color: var(--text-2); }
 
 /* ============================================================
-   Type scale. Plain h1/h2/h3 get the scale too; classes are for other tags.
+   6. Type scale. Plain h1/h2/h3 get the scale too; the classes are for other tags.
    ============================================================ */
-h1, h2, h3, h4 { font-family: var(--font-display); color: var(--text); margin-top: 0; }
-h1, .t-h1 { font-weight: 700; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); }
-h2, .t-h2 { font-weight: 600; font-size: var(--fs-h2); line-height: var(--lh-h2); }
-h3, .t-h3 { font-weight: 600; font-size: var(--fs-h3); line-height: var(--lh-h3); }
-.t-display { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); }
-.t-body-l  { font-family: var(--font-body); font-weight: 400; font-size: var(--fs-body-l); line-height: var(--lh-body-l); }
-.t-body    { font-family: var(--font-body); font-weight: 400; font-size: var(--fs-body); line-height: var(--lh-body); }
-.t-label   { font-family: var(--font-body); font-weight: 800; font-size: var(--fs-label); line-height: var(--lh-label); }
-.t-caption { font-family: var(--font-body); font-weight: 600; font-size: var(--fs-caption); line-height: var(--lh-caption); }
-.t-eyebrow { font-family: var(--font-body); font-weight: 800; font-size: var(--fs-eyebrow); line-height: var(--lh-eyebrow);
-  letter-spacing: var(--ls-eyebrow); text-transform: uppercase; }
+h1, h2, h3, h4 { font-family: var(--font-sans); color: var(--text); margin-top: 0; }
+h1, .t-h1 { font-weight: 800; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: var(--ls-h1); color: var(--text); }
+h2, .t-h2 { font-weight: 700; font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: var(--ls-h2); color: var(--text); }
+h3, .t-h3 { font-weight: 700; font-size: var(--fs-h3); line-height: var(--lh-h3); color: var(--text); }
+.t-display { font-weight: 800; font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: var(--ls-display); color: var(--text); }
+.t-body-l  { font-weight: 400; font-size: var(--fs-body-l); line-height: var(--lh-body-l); }
+.t-body    { font-weight: 400; font-size: var(--fs-body); line-height: var(--lh-body); }
+.t-label   { font-weight: 600; font-size: var(--fs-label); line-height: var(--lh-label); }
+.t-caption { font-weight: 500; font-size: var(--fs-caption); line-height: var(--lh-caption); }
+.t-eyebrow { font-weight: 600; font-size: var(--fs-eyebrow); line-height: var(--lh-eyebrow);
+  letter-spacing: var(--ls-eyebrow); text-transform: uppercase; color: var(--muted); }
+
+/* Line icons (lucide-react): sized to the text next to them */
+.icon { width: 1.25em; height: 1.25em; flex: none; vertical-align: -0.2em; stroke-width: 2; }
 
 /* ============================================================
-   Buttons: pills. Heights 36 / 48 / 56, but never a touch target under 44px.
+   7. Buttons: pills, at least 44px tall by default
    ============================================================ */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
-  height: 48px; min-width: var(--tap); padding: 0 var(--s-5);
+  min-height: var(--tap); min-width: var(--tap); padding: 0 var(--s-5);
   border: 1px solid transparent; border-radius: var(--r-pill);
-  font-family: var(--font-body); font-weight: 800; font-size: var(--fs-label); line-height: var(--lh-label);
+  font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-label); line-height: var(--lh-label);
   white-space: nowrap; text-decoration: none; cursor: pointer;
-  transition: transform var(--t-hover) var(--ease), filter var(--t-hover) var(--ease),
-    box-shadow var(--t-hover) var(--ease), background-color var(--t-hover) var(--ease);
+  transition: background-color var(--t-hover) var(--ease), border-color var(--t-hover) var(--ease),
+    filter var(--t-hover) var(--ease), transform var(--t-press) var(--ease);
   position: relative;
 }
-/* Small buttons look 36px tall but keep a 44px tap area through an invisible extension. */
-.btn-sm { height: 36px; padding: 0 var(--s-4); }
+/* Small: looks 36px tall, but the invisible extension keeps a 44px tap area */
+.btn-sm { min-height: 36px; padding: 0 var(--s-4); }
 .btn-sm::before { content: ""; position: absolute; inset: -4px 0; }
-.btn-lg { height: 56px; padding: 0 var(--s-6); font-size: var(--fs-body); }
-.btn:hover:not(:disabled):not([aria-disabled="true"]) { filter: brightness(1.06); transform: translateY(-1px); }
+.btn-lg { min-height: 52px; padding: 0 var(--s-6); font-size: var(--fs-body); }
+.btn:hover:not(:disabled):not([aria-disabled="true"]) { filter: brightness(1.08); }
 .btn:active:not(:disabled):not([aria-disabled="true"]) { transform: scale(0.98); filter: none; }
-.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
 
-.btn-primary { background: var(--accent-gradient); color: var(--accent-contrast); box-shadow: var(--shadow-glass); }
-.btn-secondary {
-  background: var(--glass-card-bg); color: var(--text); border-color: var(--glass-card-border);
-  -webkit-backdrop-filter: blur(var(--glass-card-blur)) saturate(var(--glass-saturate));
-  backdrop-filter: blur(var(--glass-card-blur)) saturate(var(--glass-saturate));
-  box-shadow: var(--shadow-glass);
-}
-/* Ghost: text-link style button */
-.btn-ghost { background: transparent; color: var(--accent); border-color: var(--field-border); }
+.btn-primary { background: var(--accent-fill); color: var(--accent-contrast); }
+.btn-secondary { background: var(--card); color: var(--text); border-color: var(--border-strong); }
+.btn-secondary:hover:not(:disabled) { background: var(--card-2); filter: none; }
+.btn-ghost { background: transparent; color: var(--text); border-color: transparent; }
+.btn-ghost:hover:not(:disabled) { background: var(--card-2); filter: none; }
 
 /* ============================================================
-   Chips (pills you can press) and badges (small labels)
+   8. Inputs, chips, badges
    ============================================================ */
+.input {
+  width: 100%; min-height: var(--tap); padding: var(--s-2) var(--s-4);
+  background: var(--card); color: var(--text);
+  border: 1px solid var(--border-strong); border-radius: var(--r-md);
+  font-family: var(--font-sans); font-size: var(--fs-body);
+  transition: border-color var(--t-hover) var(--ease), box-shadow var(--t-hover) var(--ease);
+}
+.input::placeholder { color: var(--muted); opacity: 1; }
+.input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+
 .chip {
   display: inline-flex; align-items: center; gap: var(--s-1);
   min-height: 36px; padding: 0 var(--s-4);
-  background: var(--chip-bg); color: var(--text);
-  border: 1px solid var(--chip-border); border-radius: var(--r-pill);
-  font-family: var(--font-body); font-weight: 800; font-size: var(--fs-caption); line-height: var(--lh-caption);
+  background: var(--card); color: var(--text-2);
+  border: 1px solid var(--border-strong); border-radius: var(--r-pill);
+  font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-label); line-height: var(--lh-label);
   cursor: pointer;
-  transition: transform var(--t-hover) var(--ease), background-color var(--t-hover) var(--ease), border-color var(--t-hover) var(--ease);
+  transition: background-color var(--t-hover) var(--ease), border-color var(--t-hover) var(--ease), color var(--t-hover) var(--ease);
 }
-.chip:hover { transform: translateY(-1px); }
-.chip:active { transform: scale(0.98); }
-.chip-active { background: var(--chip-active-bg); color: var(--accent); border-color: var(--accent); }
+.chip:hover { background: var(--card-2); color: var(--text); }
+.chip-active, .chip-active:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
 
 .badge {
   display: inline-flex; align-items: center; gap: var(--s-1);
   padding: 2px var(--s-3); border-radius: var(--r-pill);
-  background: var(--glass-art-bg); color: var(--text);
-  border: 1px solid var(--glass-art-border);
-  font-family: var(--font-body); font-weight: 800; font-size: var(--fs-caption); line-height: var(--lh-caption);
+  background: var(--card-2); color: var(--text);
+  border: 1px solid var(--border);
+  font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-caption); line-height: var(--lh-caption);
 }
 
 /* ============================================================
-   Skeleton (loading placeholder) and Shimmer (one-time highlight)
+   9. Skeleton (loading placeholder)
    ============================================================ */
 .skeleton {
-  background-color: var(--glass-card-bg);
-  background-image: linear-gradient(100deg, transparent 30%, var(--sheen-a) 44%, var(--sheen-b) 56%, transparent 70%);
+  background-color: var(--card-2);
+  background-image: linear-gradient(100deg, transparent 30%, var(--sheen-b) 50%, transparent 70%);
   background-size: 300% 100%;
   background-repeat: no-repeat;
-  border-radius: var(--r-sm);
-  animation: jelly-sheen 1.4s linear infinite;   /* sheen moves left to right */
+  border-radius: var(--r-md);
+  animation: skeleton-sheen 1.4s linear infinite;
 }
-@keyframes jelly-sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
+@keyframes skeleton-sheen { from { background-position: 100% 0; } to { background-position: 0 0; } }
 
-/* .shimmer: a white 12% highlight at 30 degrees sweeps once across (700ms) when the element appears and when focus enters it. */
-.shimmer { position: relative; overflow: hidden; }
-.shimmer::after {
-  content: ""; position: absolute; top: -20%; bottom: -20%; left: 0; width: 60%;
-  background: linear-gradient(60deg, transparent 0%, var(--shimmer-color) 50%, transparent 100%);
-  transform: translateX(-120%) skewX(-30deg);
-  pointer-events: none;
-  animation: jelly-sweep 700ms var(--ease) 1 both;
-}
-.shimmer:focus-within::after { animation-name: jelly-sweep-focus; }
-@keyframes jelly-sweep       { from { transform: translateX(-120%) skewX(-30deg); } to { transform: translateX(280%) skewX(-30deg); } }
-@keyframes jelly-sweep-focus { from { transform: translateX(-120%) skewX(-30deg); } to { transform: translateX(280%) skewX(-30deg); } }
+/* .shimmer was a Frosted Jelly highlight: now it does nothing, old markup stays harmless. */
+.shimmer { position: relative; }
+
+/* Lift (cards): rise 2px on hover */
+.lift { transition: transform var(--t-hover) var(--ease), box-shadow var(--t-hover) var(--ease), border-color var(--t-hover) var(--ease); }
+.lift:hover, .lift:focus-visible { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.lift:active { transform: scale(0.99); }
 
 /* ============================================================
-   Lift (cards): rise 4px on hover, shadow grows, press 0.98
-   ============================================================ */
-.lift { transition: transform var(--t-hover) var(--ease), box-shadow var(--t-hover) var(--ease); }
-.lift:hover, .lift:focus-visible { transform: translateY(-4px); box-shadow: var(--shadow-glass-hover); }
-.lift:active { transform: scale(0.98); }
-
-/* ============================================================
-   Layout + accessibility helpers
+   10. Layout + accessibility helpers
    ============================================================ */
 .container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
-@media (min-width: 900px) { :root { --gutter: 32px; } }
 
 /* Visually hidden but still read by screen readers (form labels etc.) */
 .sr-only, .visually-hidden {
@@ -368,10 +346,7 @@ h3, .t-h3 { font-weight: 600; font-size: var(--fs-h3); line-height: var(--lh-h3)
   clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
-/* ============================================================
-   Reduced motion: no shimmer, no lift/scale, no looping sheen.
-   Transitions become short opacity fades.
-   ============================================================ */
+/* Reduced motion: no looping sheen, no lift/scale. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -380,8 +355,6 @@ h3, .t-h3 { font-weight: 600; font-size: var(--fs-h3); line-height: var(--lh-h3)
     transition-duration: var(--t-press) !important;
     transition-delay: 0s !important;
   }
-  .shimmer::after { display: none; }
-  .skeleton { background-image: none; background-color: var(--chip-active-bg); }   /* static tint */
-  .lift:hover, .lift:focus-visible, .lift:active,
-  .btn:hover, .btn:active, .chip:hover, .chip:active { transform: none !important; }
+  .skeleton { background-image: none; }
+  .lift:hover, .lift:focus-visible, .lift:active, .btn:active { transform: none !important; }
 }

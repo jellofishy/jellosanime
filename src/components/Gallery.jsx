@@ -1,6 +1,7 @@
 // Small picture gallery (from TMDB). Clicking a picture opens a larger view.
 // The TMDB attribution is always shown with it.
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import { isHttps, asArray } from "../safeUrl.js";
 import "../detail.css";
 
@@ -33,7 +34,7 @@ export default function Gallery({ extras, title }) {
         <div className="lightbox" role="dialog" aria-modal="true" aria-label="Larger image"
           onClick={() => setOpen("")}>
           <img src={open} alt={`${title}, larger view`} />
-          <button type="button" className="btn btn-primary lightbox-close" onClick={() => setOpen("")}>Close</button>
+          <button type="button" className="btn btn-primary lightbox-close" onClick={() => setOpen("")}><X className="icon" aria-hidden="true" /> Close</button>
         </div>
       )}
       {att && att.text && (

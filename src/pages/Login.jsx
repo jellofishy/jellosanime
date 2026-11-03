@@ -1,6 +1,7 @@
 // Sign up / log in page. Supabase does the secure parts (passwords are never stored by us).
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { LogIn } from "lucide-react";
 import { supabase, loginEnabled } from "../auth/supabaseClient.js";
 import "../states.css";
 import "../login.css";
@@ -16,7 +17,7 @@ export default function Login() {
   if (!loginEnabled) {
     return (
       <div className="login-wrap">
-        <div className="login-card glass-sheet"><p className="muted">Login isn't set up yet.</p></div>
+        <div className="login-card"><p className="muted">Login isn't set up yet.</p></div>
       </div>
     );
   }
@@ -57,25 +58,20 @@ export default function Login() {
 
   return (
     <div className="login-wrap">
-      <form className="login-card glass-sheet" onSubmit={onSubmit}>
+      <form className="login-card" onSubmit={onSubmit}>
         <h1 className="t-h1 login-title">{mode === "login" ? "Log in" : "Create account"}</h1>
         <button type="button" className="btn google-btn" onClick={signInWithGoogle}>
-          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.5l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/>
-            <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/>
-            <path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/>
-            <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/>
-          </svg>
+          <LogIn className="icon" aria-hidden="true" />
           Continue with Google
         </button>
         <p className="login-or muted">or use your email</p>
         <div>
-          <label htmlFor="login-email" className="field-label">Email</label>
-          <input id="login-email" className="field-input" type="email" autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <label htmlFor="login-email" className="login-label">Email</label>
+          <input id="login-email" className="login-input" type="email" autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
         <div>
-          <label htmlFor="login-password" className="field-label">Password</label>
-          <input id="login-password" className="field-input" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} placeholder="Password (6+ characters)" value={password}
+          <label htmlFor="login-password" className="login-label">Password</label>
+          <input id="login-password" className="login-input" type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} placeholder="Password (6+ characters)" value={password}
             onChange={(e) => setPassword(e.target.value)} minLength={6} required />
         </div>
         <button type="submit" className="btn btn-primary btn-lg" disabled={busy}>{mode === "login" ? "Log in" : "Sign up"}</button>

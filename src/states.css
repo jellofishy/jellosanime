@@ -1,45 +1,41 @@
-/* Shared page styles for Frosted Jelly: type scale, form fields, error / empty states, fades.
-   Only token variables from theme.css are used (no hard-coded colors). Phone first.
-   The big glass / button / chip classes (.glass, .btn, .chip ...) live in theme.css. */
+/* Shared page styles: form fields, error / empty states, fades. Midnight theme (flat, token colors only).
+   The big shared classes (.btn, .chip, .skeleton ...) live in theme.css. Phone first. */
 
-/* ---- Form fields on glass (login, filters) ---- */
-.field-label { display: block; font-weight: 800; font-size: 15px; line-height: 1.3; margin-bottom: var(--s-1); }
+/* ---- Form fields (login, filters) ---- */
+.field-label { display: block; font-weight: 600; font-size: 14px; line-height: 1.3; margin-bottom: var(--s-1); color: var(--text); }
 .field-input {
   width: 100%; min-height: 48px; padding: 10px var(--s-4);
-  border-radius: var(--r-sm); color: var(--text);
-  background: var(--field-bg); border: 1.5px solid var(--field-border);
-  backdrop-filter: blur(var(--glass-card-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-card-blur)) saturate(var(--glass-saturate));
-  font-family: var(--font-body); font-size: 16px;
-  transition: border-color var(--t-hover) var(--ease), box-shadow var(--t-hover) var(--ease);
+  border-radius: var(--r-md); color: var(--text);
+  background: var(--card-2); border: 1px solid var(--border);
+  font-family: var(--font-sans); font-size: 16px;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
 }
-.field-input:focus-visible {
-  outline: none; border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--focus-soft);
-}
+.field-input:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; border-color: var(--accent); }
 .field-input::placeholder { color: var(--muted); opacity: 1; }
 
 /* ---- Error / empty states ---- */
 .state-card {
-  max-width: 560px; margin: var(--s-7) auto; padding: var(--s-6) var(--s-5);
-  border-radius: var(--r-lg); text-align: center; box-shadow: var(--shadow-glass);
+  max-width: 560px; margin: var(--s-6) auto; padding: var(--s-6) var(--s-5);
+  border-radius: var(--r-lg); text-align: center; background: var(--card); border: 1px solid var(--border);
+  box-shadow: var(--shadow-1);
 }
-.state-icon { font-size: 40px; line-height: 1; margin: 0 0 var(--s-3); }
+.state-icon { display: block; width: 40px; height: 40px; margin: 0 auto var(--s-3); color: var(--accent); }
 .state-title { margin: 0 0 var(--s-2); }
 .state-text { margin: 0 auto var(--s-5); max-width: 44ch; color: var(--muted); }
 .state-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; }
 /* Inline strip used by a single row ("Trending couldn't load.  Retry") */
 .state-strip {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3);
-  padding: var(--s-3) var(--s-4); border-radius: var(--r-md); box-shadow: var(--shadow-glass);
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--card); border: 1px solid var(--border);
 }
-.state-strip p { margin: 0; flex: 1 1 auto; font-weight: 700; }
+.state-strip-icon { flex: none; color: var(--accent); }
+.state-strip p { margin: 0; flex: 1 1 auto; font-weight: 600; color: var(--text); }
 
 /* Content that replaces a skeleton fades in over 200ms (reduced motion: still a quick fade). */
-.fade-in { animation: jf-fade-in var(--t-hover) var(--ease) both; }
+.fade-in { animation: jf-fade-in 200ms ease both; }
 @keyframes jf-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .fade-in { animation-duration: 120ms; }
 }
 
-.page-title { margin: var(--s-5) 0 var(--s-4); overflow-wrap: anywhere; }
+.page-title { margin: var(--s-5) 0 var(--s-4); overflow-wrap: anywhere; font-weight: 800; letter-spacing: -0.02em; }

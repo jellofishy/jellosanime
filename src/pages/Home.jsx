@@ -1,12 +1,17 @@
 // Home page: Spotlight banner, mood chips, then rows. Each row loads and fails on its own.
+// Order: Continue watching, Top This Week, Airing Today, This Season, Top Anime, Latest comments.
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Dices } from "lucide-react";
 import { fetchAnimeList, fetchAiringToday, fetchTrending } from "../api.js";
 import { formatAirTime, hasAired, sortByAirTime } from "../airing.js";
 import AnimeRow, { AniListCredit } from "../components/AnimeRow.jsx";
 import AnimeCard from "../components/AnimeCard.jsx";
 import Spotlight from "../components/Spotlight.jsx";
 import MoodChips from "../components/MoodChips.jsx";
+import ContinueWatching from "../components/ContinueWatching.jsx";
+import LatestComments from "../components/LatestComments.jsx";
+import { currentSeason } from "../browseFilters.js";
 import "../home.css";
 import "../states.css";
 
@@ -51,37 +56,58 @@ export default function Home() {
     navigate(`/anime/${pick.malId}`);
   }
 
-  // One card in the Airing Today row: episode pill + local air time.
+  // One card in the Airing Today row: "Ep N" chip + local air time chip.
   function airingCard(a) {
-    const time = formatAirTime(a.airingAt);
-    const note = hasAired(a.airingAt) ? `Aired ${time}` : time ? `${time} your time` : "";
-    return <AnimeCard key={`${a.malId}-${a.episode}`} anime={a} episode={a.episode} note={note} />;
+    return (
+      <AnimeCard key={`${a.malId}-${a.episode}`} anime={a} episode={a.episode}
+        time={formatAirTime(a.airingAt)} aired={hasAired(a.airingAt)} />
+    );
   }
+
+  const { season: thisSeason, year: thisYear } = currentSeason();
 
   return (
     <>
       <section className="intro">
-        <h1 className="t-display">Find your next anime</h1>
-        <p className="t-body-l muted">Every anime, what it's about, what fans think, and where to watch it legally.</p>
-        <button type="button" className="btn btn-secondary btn-lg intro-btn" onClick={surprise} disabled={pool.length === 0}>
-          {stillLoading ? "Loading…" : "🎲 Surprise me"}
+        <div className="intro-text">
+          <h1 className="intro-title">Find your next anime</h1>
+          <p className="intro-sub">Every anime, what it's about, what fans think, and where to watch it legally.</p>
+        </div>
+        <button type="button" className="btn btn-secondary intro-btn" onClick={surprise} disabled={pool.length === 0}>
+          <Dices className="icon" aria-hidden="true" /> {stillLoading ? "Loading…" : "Surprise me"}
         </button>
       </section>
 
       <Spotlight items={spotlightItems} loading={spotlightLoading} />
       <MoodChips />
 
+      <ContinueWatching />
+
+      <AnimeRow
+        title="Top This Week"
+        items={trending.items} failed={trending.failed} onRetry={trending.retry}
+        seeAllTo="/browse?order_by=popularity"
+        credit={AniListCredit}
+      />
       <AnimeRow
         title="Airing Today"
         items={airingSorted}
         failed={airing.failed} onRetry={airing.retry}
+        seeAllTo="/airing"
         emptyText="No episodes are listed for today."
         renderCard={airingCard}
         credit={<>{AniListCredit}. Times are shown in your local time.</>}
       />
-      <AnimeRow title="Trending" items={trending.items} failed={trending.failed} onRetry={trending.retry} credit={AniListCredit} />
-      <AnimeRow title="Top Anime" items={top.items} failed={top.failed} onRetry={top.retry} credit={AniListCredit} />
-      <AnimeRow title="This Season" items={season.items} failed={season.failed} onRetry={season.retry} credit={AniListCredit} />
+      <AnimeRow
+        title="This Season"
+        items={season.items} failed={season.failed} onRetry={season.retry}
+        seeAllTo={`/browse?season=${thisSeason}&year=${thisYear}`}
+        credit={AniListCredit}
+      />
+      <AnimeRow title="Top Anime" items={top.items} failed={top.failed} onRetry={top.retry}
+        seeAllTo="/browse?order_by=score" credit={AniListCredit} />
+
+      <LatestComments />
     </>
   );
 }

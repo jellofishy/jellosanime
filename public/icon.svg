@@ -1,28 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <!-- Full app icon: glossy pink to lavender jelly drop holding a rounded white "j", one sparkle. -->
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#FFD3E4"/>
-      <stop offset="1" stop-color="#D6EBFF"/>
-    </linearGradient>
-    <linearGradient id="drop" x1="0.15" y1="0" x2="0.85" y2="1">
-      <stop offset="0" stop-color="#E8478C"/>
-      <stop offset="0.55" stop-color="#C2185B"/>
-      <stop offset="1" stop-color="#6D4AE0"/>
-    </linearGradient>
-    <radialGradient id="shine" cx="0.3" cy="0.25" r="0.5">
-      <stop offset="0" stop-color="#fff" stop-opacity="0.75"/>
-      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <rect width="1024" height="1024" fill="url(#bg)"/>
-  <!-- drop: pointed top, round bottom -->
-  <path d="M512 150 C 600 290 790 400 790 612 C 790 770 668 880 512 880 C 356 880 234 770 234 612 C 234 400 424 290 512 150 Z" fill="url(#drop)"/>
-  <!-- glossy highlight -->
-  <ellipse cx="410" cy="470" rx="110" ry="170" transform="rotate(25 410 470)" fill="url(#shine)"/>
+  <!-- Full app icon: dark background with a lighter rounded square holding a pink "j". -->
+  <rect width="1024" height="1024" fill="#0F0F12"/>
+  <rect x="112" y="112" width="800" height="800" rx="200" fill="#1A1A1F" stroke="#2A2A33" stroke-width="8"/>
   <!-- the j: thick rounded stroke + dot -->
-  <path d="M560 440 V650 Q560 740 470 740 Q430 740 400 718" fill="none" stroke="#fff" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="560" cy="352" r="48" fill="#fff"/>
-  <!-- sparkle -->
-  <path d="M770 220 Q780 270 830 280 Q780 290 770 340 Q760 290 710 280 Q760 270 770 220 Z" fill="#fff"/>
+  <path d="M560 440 V650 Q560 740 470 740 Q430 740 400 718" fill="none" stroke="#EC4899" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="560" cy="352" r="48" fill="#EC4899"/>
 </svg>

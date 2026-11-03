@@ -1,6 +1,7 @@
 // Share button: uses the phone's share sheet if there is one,
 // otherwise copies the page address and says "Link copied!".
 import { useState } from "react";
+import { Share2 } from "lucide-react";
 import "../detail.css";
 
 export default function ShareButton({ title }) {
@@ -26,7 +27,7 @@ export default function ShareButton({ title }) {
   return (
     <span className="share-wrap">
       <button type="button" className="btn btn-secondary" onClick={share} aria-label={`Share ${title}`}>
-        <span aria-hidden="true">↗</span>&nbsp;Share
+        <Share2 className="icon" aria-hidden="true" /> Share
       </button>
       <span className="muted t-caption" aria-live="polite">{msg}</span>
     </span>

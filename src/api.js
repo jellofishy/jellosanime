@@ -40,3 +40,5 @@ export const fetchAiringToday = () => getJson("/api/airing-today");
 export const fetchTrending = () => getJson("/api/trending");
 // Genre list: { genres: [{id, name}] }
 export const fetchGenres = () => getJson("/api/genres");
+// The next 7 days of episodes: { results: [AiringItem], credits } (the page groups them by the visitor's local day)
+export const fetchAiringWeek = () => getJson("/api/airing-week");

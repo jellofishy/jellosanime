@@ -105,3 +105,9 @@ export function moodLink(mood) {
   const p = new URLSearchParams({ genres: mood.genres.join(","), mood: mood.label });
   return `/browse?${p.toString()}`;
 }
+
+// The current anime season and year (used by the "This Season" See all link).
+// Winter = Jan-Mar, spring = Apr-Jun, summer = Jul-Sep, fall = Oct-Dec.
+export function currentSeason(now = new Date()) {
+  return { season: SEASONS[Math.floor(now.getMonth() / 3)], year: now.getFullYear() };
+}

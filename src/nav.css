@@ -1,0 +1,160 @@
+/* Navigation styles: top bar, command palette, popovers, bottom tab bar, footer, back-to-top.
+   Uses only the shared tokens from theme.css (plus the 5 accent swatch colors at the bottom). */
+
+/* ---------- Top bar ---------- */
+.nv-header { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--border); }
+.nv-inner { display: flex; align-items: center; gap: var(--s-3); min-height: 60px; }
+.nv-logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; flex: none; }
+.nv-logo span { color: var(--accent); }
+
+.nv-links { display: none; align-items: center; gap: var(--s-1); }
+.nv-link { padding: 8px 12px; border-radius: var(--r-pill); color: var(--muted); font-weight: 600; font-size: 0.92rem; text-decoration: none; }
+.nv-link:hover { color: var(--text); background: var(--card); }
+.nv-link.is-active { color: var(--accent-contrast); background: var(--accent-fill); }
+
+/* Search field look-alike (a button) */
+.nv-search { display: none; align-items: center; gap: var(--s-2); flex: 1; min-width: 0; max-width: 420px; min-height: 44px; margin-left: auto;
+  padding: 0 var(--s-3); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--card); color: var(--muted);
+  font: inherit; font-size: 0.92rem; cursor: pointer; text-align: left; }
+.nv-search:hover { border-color: var(--accent); }
+.nv-search-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nv-kbd { font: inherit; font-size: 0.75rem; font-weight: 600; padding: 2px 6px; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--muted); background: var(--card-2); }
+
+.nv-actions { display: flex; align-items: center; gap: var(--s-1); margin-left: auto; }
+.nv-search + .nv-actions { margin-left: 0; }
+.nv-search-icon { display: inline-flex; }
+
+/* Round icon buttons (44px touch target) */
+.nv-icon-btn { position: relative; width: 44px; height: 44px; flex: none; display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: var(--r-pill); background: transparent; color: var(--text-2); cursor: pointer; padding: 0; }
+.nv-icon-btn:hover { background: var(--card); color: var(--text); }
+.nv-icon-btn[aria-expanded="true"] { background: var(--card-2); color: var(--text); }
+.nv-icon-btn:focus-visible, .nv-search:focus-visible, .nv-tab:focus-visible, .nv-link:focus-visible,
+.nv-row:focus-visible, .nv-seg-btn:focus-visible, .nv-mode-btn:focus-visible, .nv-swatch:focus-visible, .nv-btt:focus-visible, .nv-esc:focus-visible {
+  outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.nv-icon-btn .icon { width: 22px; height: 22px; }
+.nv-dot { position: absolute; top: 9px; right: 10px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent-fill); border: 2px solid var(--bg); }
+.nv-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; display: block; }
+.nv-avatar-initial { display: inline-flex; align-items: center; justify-content: center; background: var(--accent-fill); color: var(--accent-contrast); font-weight: 700; font-size: 0.9rem; }
+
+/* Language: segmented on wide screens, icon button otherwise */
+.nv-seg { display: none; padding: 3px; gap: 2px; border: 1px solid var(--border); border-radius: var(--r-pill); background: var(--card); }
+.nv-seg-btn { border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 0.78rem; font-weight: 600; padding: 6px 10px; min-height: 30px; border-radius: var(--r-pill); cursor: pointer; }
+.nv-seg-btn:hover { color: var(--text); }
+.nv-seg-btn.is-on { background: var(--accent-fill); color: var(--accent-contrast); }
+
+/* ---------- Popovers (desktop dropdown, phone bottom sheet) ---------- */
+.nv-pop-wrap { position: relative; display: inline-flex; }
+.nv-panel { position: absolute; top: calc(100% + 8px); right: 0; z-index: 60; width: 340px; max-width: calc(100vw - 24px); max-height: 70vh; overflow-y: auto;
+  padding: var(--s-3); background: var(--card); color: var(--text-2); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-2); }
+.nv-panel-sm { width: 260px; }
+.nv-panel-title { margin: var(--s-2) var(--s-2) var(--s-2); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.nv-scrim { display: none; }
+.nv-note { margin: 0; padding: var(--s-3); color: var(--muted); font-size: 0.92rem; display: flex; flex-direction: column; gap: var(--s-3); align-items: flex-start; }
+.nv-note p { margin: 0; }
+.nv-error { margin: var(--s-2) 0 0; padding: 0 var(--s-1); color: var(--text-2); font-size: 0.85rem; overflow-wrap: anywhere; }
+.nv-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.nv-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); min-height: 44px; padding: 8px var(--s-3);
+  border-radius: var(--r-md); color: var(--text-2); text-decoration: none; font-weight: 500; font-size: 0.95rem; width: 100%; box-sizing: border-box; }
+.nv-row:hover, .nv-row.is-active { background: var(--card-2); color: var(--text); }
+.nv-row-btn { border: 0; background: transparent; font-family: inherit; cursor: pointer; text-align: left; }
+.nv-row-main { display: inline-flex; align-items: center; gap: var(--s-3); }
+.nv-row .icon { color: var(--accent); }
+.nv-notice { flex-wrap: wrap; justify-content: flex-start; }
+.nv-notice-title { flex: 1 1 100%; color: var(--text); font-weight: 600; overflow-wrap: anywhere; }
+.nv-time { color: var(--muted); font-size: 0.85rem; }
+.nv-who { margin: var(--s-2) var(--s-3) 0; font-weight: 700; color: var(--text); overflow-wrap: anywhere; }
+.nv-who-sub { margin: 0 var(--s-3) var(--s-2); font-size: 0.85rem; color: var(--muted); overflow-wrap: anywhere; }
+.nv-full { width: 100%; margin-bottom: var(--s-2); justify-content: center; }
+
+/* Palette menu */
+.nv-mode { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); padding: 0 var(--s-2) var(--s-3); }
+.nv-mode-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); min-height: 44px; border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--card-2); color: var(--text-2); font: inherit; font-weight: 600; cursor: pointer; }
+.nv-mode-btn.is-on { border-color: var(--accent); color: var(--text); box-shadow: inset 0 0 0 1px var(--accent); }
+.nv-swatches { display: flex; gap: var(--s-2); padding: 0 var(--s-2) var(--s-2); flex-wrap: wrap; }
+.nv-swatch { width: 44px; height: 44px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; color: #fff; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center; }
+.nv-swatch.is-on { outline: 2px solid var(--text); outline-offset: 2px; }
+.nv-swatch .icon { width: 20px; height: 20px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
+/* Fixed brand colors of the 5 accents (these show what each choice looks like; they do not change with the theme). */
+.nv-swatch-pink { background: #EC4899; }
+.nv-swatch-purple { background: #8B5CF6; }
+.nv-swatch-blue { background: #3B82F6; }
+.nv-swatch-green { background: #22C55E; }
+.nv-swatch-orange { background: #F97316; }
+
+/* ---------- Command palette ---------- */
+.nv-modal-wrap { position: fixed; inset: 0; z-index: 100; display: flex; justify-content: center; align-items: flex-start; padding: 12vh var(--s-3) var(--s-3); }
+.nv-modal-scrim { position: absolute; inset: 0; background: var(--scrim); }
+.nv-modal { position: relative; width: 100%; max-width: 600px; max-height: 76vh; display: flex; flex-direction: column; background: var(--card); color: var(--text-2);
+  border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-2); overflow: hidden; }
+.nv-modal-search { display: flex; align-items: center; gap: var(--s-3); padding: 0 var(--s-4); min-height: 56px; border-bottom: 1px solid var(--border); }
+.nv-modal-search .icon { color: var(--muted); flex: none; }
+.nv-modal-input { flex: 1; min-width: 0; height: 56px; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 1rem; outline: none; }
+.nv-modal-input::placeholder { color: var(--muted); }
+.nv-esc { border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--card-2); color: var(--muted); font: inherit; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; min-height: 28px; cursor: pointer; }
+.nv-modal-body { overflow-y: auto; padding: var(--s-2); flex: 1; }
+.nv-modal-foot { margin: 0; padding: var(--s-2) var(--s-4); border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); }
+.nv-result { gap: var(--s-3); justify-content: flex-start; }
+.nv-thumb { width: 36px; height: 52px; flex: none; border-radius: var(--r-sm); object-fit: cover; background: var(--card-2); display: block; }
+.nv-result-text { display: flex; flex-direction: column; min-width: 0; }
+.nv-result-title { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nv-result-meta { font-size: 0.8rem; color: var(--muted); }
+
+/* ---------- Bottom tab bar (phones) ---------- */
+.nv-bottom { display: none; }
+.nv-tab { flex: 1; min-width: 0; min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  color: var(--muted); text-decoration: none; font-size: 0.7rem; font-weight: 600; }
+.nv-tab .icon { width: 22px; height: 22px; }
+.nv-tab.is-active { color: var(--accent); }
+
+/* ---------- Footer ---------- */
+.nv-footer { width: calc(100% - 2 * var(--s-4)); max-width: 1200px; margin: var(--s-8) auto var(--s-5); padding: var(--s-5) 0;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r-lg); color: var(--muted); font-size: 0.82rem; line-height: 1.55; }
+.nv-footer p { margin: 0 0 var(--s-3); }
+.nv-footer strong { color: var(--text); }
+.nv-footer-sources { margin: 0 0 var(--s-3); padding-left: var(--s-5); display: grid; gap: var(--s-1); }
+.nv-footer a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---------- Back to top ---------- */
+.nv-btt { position: fixed; right: var(--s-4); bottom: var(--s-4); z-index: 40; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--card-2); color: var(--text); box-shadow: var(--shadow-1); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .2s, transform .2s; }
+.nv-btt.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.nv-btt:hover { background: var(--accent-fill); color: var(--accent-contrast); }
+
+/* ---------- Breakpoints ---------- */
+@media (min-width: 769px) {
+  .nv-links { display: flex; }
+  .nv-search { display: flex; }
+  .nv-search-icon { display: none; }
+  .nv-inner { gap: var(--s-4); }
+}
+@media (min-width: 1180px) {
+  .nv-seg { display: inline-flex; }
+  .nv-lang-btn { display: none; }
+}
+
+@media (max-width: 768px) {
+  .nv-inner { gap: var(--s-1); padding-left: var(--s-3); padding-right: var(--s-3); }
+  .nv-logo { margin-right: auto; font-size: 1.15rem; }
+  .nv-actions { gap: 0; }
+
+  /* Popovers become bottom sheets */
+  .nv-pop-wrap { position: static; }
+  .nv-scrim { display: block; position: fixed; inset: 0; z-index: 70; background: var(--scrim); }
+  .nv-panel { position: fixed; top: auto; left: 0; right: 0; bottom: 0; z-index: 71; width: 100%; max-width: none; max-height: 75vh;
+    border-radius: var(--r-lg) var(--r-lg) 0 0; padding: var(--s-4) var(--s-3) calc(var(--s-4) + env(safe-area-inset-bottom, 0px)); }
+  .nv-panel::before { content: ""; display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--border); margin: 0 auto var(--s-3); }
+
+  .nv-bottom { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; background: var(--card); border-top: 1px solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom, 0px); }
+  /* Keep the page (and footer) clear of the tab bar */
+  body.has-bottom-nav { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  .has-bottom-nav main { padding-bottom: var(--s-4); }
+  .nv-btt { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  .nv-modal-wrap { padding-top: 8vh; }
+}
+
+@media (prefers-reduced-motion: reduce) { .nv-btt { transition: none; } }

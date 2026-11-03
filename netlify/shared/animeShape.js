@@ -7,6 +7,7 @@ export function emptyAnime() {
     malId: null,          // number - master key
     title: "",
     titleEnglish: "",
+    titleNative: "",      // original-language title (Japanese), "" if unknown
     image: "",            // cover image URL
     banner: "",           // wide banner image URL (AniList, later)
     synopsis: "",

@@ -1,4 +1,5 @@
 // "What fans think": a summary plus review cards (excerpts only, never the full text).
+import { Star, ExternalLink } from "lucide-react";
 import { isHttps, asArray } from "../safeUrl.js";
 import ErrorState from "./ErrorState.jsx";
 import "../detail.css";
@@ -17,11 +18,11 @@ function formatDate(d) {
 function ReviewCard({ r }) {
   const source = SOURCE_NAMES[r.source] || "Review";
   return (
-    <li className="review-card glass">
+    <li className="review-card">
       <div className="review-top">
         <span className="badge badge-source">{source}</span>
         {r.author && <span className="review-author">{r.author}</span>}
-        {typeof r.score === "number" && <span className="review-score">★ {r.score}</span>}
+        {typeof r.score === "number" && <span className="review-score"><Star className="icon" aria-hidden="true" /> {r.score}</span>}
         {r.recommended === true && <span className="badge badge-source pill-good">Recommended</span>}
         {r.recommended === false && <span className="badge badge-source pill-bad">Not recommended</span>}
       </div>
@@ -29,7 +30,7 @@ function ReviewCard({ r }) {
       <div className="review-bottom t-caption">
         {r.date && <span className="muted">{formatDate(r.date)}</span>}
         {isHttps(r.url) && (
-          <a className="link" href={r.url} target="_blank" rel="noopener noreferrer">Read full review</a>
+          <a className="link" href={r.url} target="_blank" rel="noopener noreferrer">Read full review <ExternalLink className="icon" aria-hidden="true" /></a>
         )}
       </div>
     </li>
@@ -47,8 +48,8 @@ export default function Reviews({ status, extras, onRetry }) {
     const s = extras.reviewSummary || {};
     body = reviews.length === 0 ? <p className="muted">No reviews found yet.</p> : (
       <>
-        <p className="review-summary glass">
-          {typeof s.averageScore === "number" && <strong>★ {s.averageScore} average · </strong>}
+        <p className="review-summary">
+          {typeof s.averageScore === "number" && <strong><Star className="icon" aria-hidden="true" /> {s.averageScore} average · </strong>}
           {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
           {(s.recommended > 0 || s.notRecommended > 0) &&
             ` · ${s.recommended || 0} recommended, ${s.notRecommended || 0} not recommended`}

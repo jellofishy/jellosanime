@@ -72,6 +72,7 @@ export function cleanAnime(raw) {
   a.malId = raw.mal_id;
   a.title = raw.title || "";
   a.titleEnglish = raw.title_english || "";
+  a.titleNative = raw.title_japanese || "";
   a.image = raw.images?.webp?.large_image_url || raw.images?.jpg?.large_image_url || "";
   a.synopsis = raw.synopsis || "";
   a.genres = (raw.genres || []).map((g) => g.name);

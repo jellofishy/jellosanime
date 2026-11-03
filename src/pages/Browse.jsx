@@ -2,6 +2,7 @@
 // so a link can be shared and the Back button works. Helpers are in ../browseFilters.js.
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { fetchAnimeList, fetchGenres } from "../api.js";
 import {
   SEASONS, TYPES, STATUSES, RATINGS, SORTS, MAX_GENRES,
@@ -124,7 +125,7 @@ export default function Browse() {
           aria-controls="filters-panel"
           onClick={() => setPanelOpen(true)}
         >
-          Filters{active > 0 ? ` (${active})` : ""}
+          <SlidersHorizontal className="icon" aria-hidden="true" /> Filters{active > 0 ? ` (${active})` : ""}
         </button>
       </div>
 
@@ -172,8 +173,6 @@ export default function Browse() {
               {Array.from({ length: 12 }, (_, i) => (
                 <div className="anime-card anime-card-skeleton" key={i} aria-hidden="true">
                   <div className="anime-art skeleton" />
-                  <div className="skeleton skeleton-line" />
-                  <div className="skeleton skeleton-line short" />
                 </div>
               ))}
             </div>
@@ -194,9 +193,13 @@ export default function Browse() {
           )}
           {data && (data.results.length > 0 || filters.page > 1) && (
             <div className="browse-pager">
-              <button type="button" className="btn btn-secondary" disabled={filters.page === 1} onClick={() => goToPage(filters.page - 1)}>← Previous</button>
+              <button type="button" className="btn btn-secondary" disabled={filters.page === 1} onClick={() => goToPage(filters.page - 1)}>
+                <ChevronLeft className="icon" aria-hidden="true" /> Previous
+              </button>
               <span className="browse-pager-page">Page {filters.page}</span>
-              <button type="button" className="btn btn-secondary" disabled={!data.hasNextPage} onClick={() => goToPage(filters.page + 1)}>Next →</button>
+              <button type="button" className="btn btn-secondary" disabled={!data.hasNextPage} onClick={() => goToPage(filters.page + 1)}>
+                Next <ChevronRight className="icon" aria-hidden="true" />
+              </button>
             </div>
           )}
         </div>

@@ -1,5 +1,7 @@
 // Round "back to top" button. Appears after you scroll down a little.
+// (On phones nav.css lifts it above the bottom tab bar.)
 import { useEffect, useState } from "react";
+import { ArrowUp } from "lucide-react";
 
 export default function BackToTop() {
   const [show, setShow] = useState(false);
@@ -20,16 +22,13 @@ export default function BackToTop() {
   return (
     <button
       type="button"
-      className={"back-to-top" + (show ? " show" : "")}
+      className={"nv-btt" + (show ? " is-shown" : "")}
       onClick={goUp}
       aria-label="Back to top"
       tabIndex={show ? 0 : -1}
       aria-hidden={show ? undefined : true}
     >
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
-        strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 19V5M5 12l7-7 7 7" />
-      </svg>
+      <ArrowUp className="icon" aria-hidden="true" />
     </button>
   );
 }

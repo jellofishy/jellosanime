@@ -1,12 +1,16 @@
-// Big featured banner at the top of the home page (D2): "Frosted Jelly" style.
+// Big featured banner at the top of the home page.
 // Shows up to 5 items. All slides sit on top of each other; only the active one is visible,
-// and switching crossfades them (400ms) with a small 12px drift (see home.css).
+// and switching crossfades them (see home.css). The title, score and buttons sit on the
+// artwork over a dark gradient, so the text is always white and easy to read.
 // It rotates every ~7 seconds, but:
 //  - it pauses while the mouse is over it or something inside has keyboard focus
 //  - it never rotates by itself when the visitor prefers reduced motion
 //  - the dots let the visitor choose an item
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Star } from "lucide-react";
+import { useTheme } from "../theme/ThemeContext.jsx";
+import { displayTitle } from "../titles.js";
 import AddToListButton from "./AddToListButton.jsx";
 import "../home.css";
 
@@ -23,6 +27,7 @@ function prefersReducedMotion() {
 }
 
 export default function Spotlight({ items, loading }) {
+  const { titleLang } = useTheme();
   const list = (items || []).filter((a) => a && a.malId).slice(0, MAX_ITEMS);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -54,7 +59,7 @@ export default function Spotlight({ items, loading }) {
     >
       <div className="spotlight">
         {list.map((a, i) => {
-          const name = a.titleEnglish || a.title || "Untitled anime";
+          const name = displayTitle(a, titleLang) || "Untitled anime";
           const hasScore = typeof a.score === "number" && a.score > 0;
           const bg = a.banner || a.image; // banner picture if we have one, else the cover
           const genres = Array.isArray(a.genres) ? a.genres.slice(0, 3) : [];
@@ -69,13 +74,12 @@ export default function Spotlight({ items, loading }) {
               aria-hidden={active ? undefined : "true"}
             >
               {bg && <img className="spotlight-art" src={bg} alt="" />}
-              {/* The text sits on frosted glass, never directly on the artwork */}
-              <div className="spotlight-card glass-art">
-                <p className="t-eyebrow spotlight-eyebrow">Spotlight</p>
-                <h2 className="t-h1 spotlight-title">{name}</h2>
+              <div className="spotlight-card">
+                <p className="spotlight-eyebrow">Spotlight</p>
+                <h2 className="spotlight-title">{name}</h2>
                 <div className="spotlight-meta">
-                  {hasScore && <span className="badge badge-score">★ {a.score}</span>}
-                  {genres.map((g) => <span className="chip chip-static" key={g}>{g}</span>)}
+                  {hasScore && <span className="hero-score"><Star className="icon" aria-hidden="true" /> {a.score}</span>}
+                  {genres.map((g) => <span className="hero-chip" key={g}>{g}</span>)}
                 </div>
                 <div className="spotlight-actions">
                   <Link className="btn btn-primary" to={`/anime/${a.malId}`} tabIndex={active ? undefined : -1}>View details</Link>

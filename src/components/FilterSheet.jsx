@@ -1,10 +1,11 @@
 // The Browse filter panel.
-//  - On desktop (900px+) it is a frosted glass card that is always visible beside the results.
+//  - On desktop (900px+) it is a flat card that is always visible beside the results.
 //  - On phones it becomes a bottom sheet: it springs up from the bottom, the page behind fades to
 //    a 40% scrim, you can close it with the Close button, the handle (drag it down), the scrim,
 //    or the Escape key. While open, Tab stays inside it, and focus goes back to the button that opened it.
 // Props: open (true/false), onClose(), id, title, children (the actual filter controls).
 import { useEffect, useRef, useState } from "react";
+import { X } from "lucide-react";
 import "../browse.css";
 
 // Tells us if a CSS media query matches right now (and keeps updating).
@@ -85,7 +86,7 @@ export default function FilterSheet({ open, onClose, id, title = "Filters", chil
       <div
         ref={panelRef}
         id={id}
-        className={`filter-panel ${isSheet ? "glass-sheet" : "glass"}`}
+        className={`filter-panel ${isSheet ? "is-sheet-panel" : "card"}`}
         role={isSheet ? "dialog" : undefined}
         aria-modal={isSheet ? "true" : undefined}
         aria-label={title}
@@ -96,7 +97,9 @@ export default function FilterSheet({ open, onClose, id, title = "Filters", chil
             <div className="sheet-handle" onPointerDown={onDragStart} onPointerMove={onDragMove}
               onPointerUp={onDragEnd} onPointerCancel={onDragEnd} aria-hidden="true"><span /></div>
             <h2 className="t-h3 sheet-title">{title}</h2>
-            <button ref={closeRef} type="button" className="btn btn-secondary btn-sm" onClick={onClose}>Close</button>
+            <button ref={closeRef} type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
+              <X className="icon" aria-hidden="true" /> Close
+            </button>
           </div>
         )}
         {!isSheet && <h2 className="t-h3 panel-title">{title}</h2>}

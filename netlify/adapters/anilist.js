@@ -103,6 +103,7 @@ export function cleanAiring(raw) {
     malId: m.idMal,
     title: m.title?.romaji || "",
     titleEnglish: m.title?.english || "",
+    titleNative: m.title?.native || "",
     image: m.coverImage?.large || "",
     banner: m.bannerImage || "",
     genres: m.genres || [],
@@ -137,6 +138,7 @@ export function cleanMedia(m) {
   a.malId = m.idMal;
   a.title = m.title?.romaji || "";
   a.titleEnglish = m.title?.english || "";
+  a.titleNative = m.title?.native || "";
   a.image = m.coverImage?.large || "";
   a.banner = m.bannerImage || "";
   a.synopsis = stripMarkup(m.description);
@@ -192,7 +194,7 @@ query ($page: Int, $from: Int, $to: Int) {
       episode
       media {
         idMal
-        title { romaji english }
+        title { romaji english native }
         coverImage { large }
         bannerImage
         genres
@@ -228,12 +230,38 @@ export async function airingToday() {
   return items;
 }
 
+// Episodes airing in the NEXT 7 days from now, sorted by time (the Airing page groups them by the
+// visitor's local day). Up to 4 pages of 50, no adult, no missing MAL id, no duplicate malId+episode.
+// Each AniList call waits in the shared limiter, so 4 pages still fit well under 10s.
+export async function airingWeek(nowSec = Math.floor(Date.now() / 1000)) {
+  const from = nowSec;
+  const to = nowSec + 7 * 86400;
+  const seen = new Set();
+  const items = [];
+  for (let page = 1; page <= 4; page++) {
+    const json = await anilistQuery(AIRING_QUERY, { page, from, to });
+    const data = json.data?.Page;
+    if (!data) break;
+    for (const raw of data.airingSchedules || []) {
+      const item = cleanAiring(raw);
+      if (!item) continue;
+      const key = `${item.malId}-${item.episode}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      items.push(item);
+    }
+    if (!data.pageInfo?.hasNextPage) break;
+  }
+  items.sort((x, y) => x.airingAt - y.airingAt);
+  return items;
+}
+
 const TRENDING_QUERY = `
 query ($perPage: Int) {
   Page(page: 1, perPage: $perPage) {
     media(type: ANIME, sort: TRENDING_DESC, isAdult: false) {
       idMal
-      title { romaji english }
+      title { romaji english native }
       coverImage { large }
       bannerImage
       description(asHtml: false)
@@ -310,7 +338,7 @@ export const statusText = (status) => STATUS_TEXT[status] || "";
 // Fields every catalog card needs (same as trending).
 const CARD_FIELDS = `
   idMal
-  title { romaji english }
+  title { romaji english native }
   coverImage { large }
   bannerImage
   description(asHtml: false)
@@ -459,6 +487,7 @@ export function cleanAnimeBase(m) {
   a.malId = m.idMal;
   a.title = m.title?.romaji || "";
   a.titleEnglish = m.title?.english || "";
+  a.titleNative = m.title?.native || "";
   a.image = m.coverImage?.large || "";
   a.banner = m.bannerImage || "";
   a.synopsis = plainSynopsis(m.description);

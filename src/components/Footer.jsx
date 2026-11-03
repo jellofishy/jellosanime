@@ -1,5 +1,5 @@
 // Credits for every data source, plus TMDB's required notice.
-import "../detail.css";
+import "../nav.css";
 
 const SOURCES = [
   ["Jikan", "https://jikan.moe", "MyAnimeList data: backup anime info and MyAnimeList reviews"],
@@ -12,14 +12,14 @@ const SOURCES = [
 
 export default function Footer() {
   return (
-    <footer className="footer glass">
+    <footer className="nv-footer">
       <div className="container">
         <p>
           <strong>jellosanime</strong> is an information site. jellosanime doesn't host, stream
           or embed episodes. We only link to legal services.
         </p>
         <p>Data and credits:</p>
-        <ul className="footer-sources">
+        <ul className="nv-footer-sources">
           {SOURCES.map(([name, url, use]) => (
             <li key={name}>
               <a href={url} target="_blank" rel="noopener noreferrer">{name}</a> — {use}
