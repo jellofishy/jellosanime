@@ -8,18 +8,22 @@ import AnimeCard from "../components/AnimeCard.jsx";
 import Spotlight from "../components/Spotlight.jsx";
 import MoodChips from "../components/MoodChips.jsx";
 import "../home.css";
+import "../states.css";
 
 // Loads a list once. Returns { items, failed }; items stays null while loading.
+// `retry()` runs the request again (the "Retry" button on a failed row uses it).
 function useRow(loader) {
   const [state, setState] = useState({ items: null, failed: false });
+  const [attempt, setAttempt] = useState(0); // goes up by 1 on every retry
   useEffect(() => {
     let alive = true; // ignore the answer if the page was left already
     loader()
-      .then((data) => alive && setState({ items: Array.isArray(data.results) ? data.results : [], failed: false }))
+      .then((data) => alive && setState({ items: Array.isArray(data && data.results) ? data.results : [], failed: false }))
       .catch(() => alive && setState({ items: null, failed: true }));
     return () => { alive = false; };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  return state;
+  }, [attempt]); // eslint-disable-line react-hooks/exhaustive-deps
+  const retry = () => { setState({ items: null, failed: false }); setAttempt((n) => n + 1); };
+  return { ...state, retry };
 }
 
 export default function Home() {
@@ -56,10 +60,10 @@ export default function Home() {
 
   return (
     <>
-      <section className="hero">
-        <h1>Find your next anime</h1>
-        <p>Every anime, what it's about, what fans think, and where to watch it legally.</p>
-        <button type="button" className="btn btn-secondary hero-btn" onClick={surprise} disabled={pool.length === 0}>
+      <section className="intro">
+        <h1 className="t-display">Find your next anime</h1>
+        <p className="t-body-l muted">Every anime, what it's about, what fans think, and where to watch it legally.</p>
+        <button type="button" className="btn btn-secondary btn-lg intro-btn" onClick={surprise} disabled={pool.length === 0}>
           {stillLoading ? "Loading…" : "🎲 Surprise me"}
         </button>
       </section>
@@ -70,14 +74,14 @@ export default function Home() {
       <AnimeRow
         title="Airing Today"
         items={airingSorted}
-        failed={airing.failed}
+        failed={airing.failed} onRetry={airing.retry}
         emptyText="No episodes are listed for today."
         renderCard={airingCard}
         credit={<>{AniListCredit}. Times are shown in your local time.</>}
       />
-      <AnimeRow title="Trending" items={trending.items} failed={trending.failed} credit={AniListCredit} />
-      <AnimeRow title="Top Anime" items={top.items} failed={top.failed} credit={AniListCredit} />
-      <AnimeRow title="This Season" items={season.items} failed={season.failed} credit={AniListCredit} />
+      <AnimeRow title="Trending" items={trending.items} failed={trending.failed} onRetry={trending.retry} credit={AniListCredit} />
+      <AnimeRow title="Top Anime" items={top.items} failed={top.failed} onRetry={top.retry} credit={AniListCredit} />
+      <AnimeRow title="This Season" items={season.items} failed={season.failed} onRetry={season.retry} credit={AniListCredit} />
     </>
   );
 }

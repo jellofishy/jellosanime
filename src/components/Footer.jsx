@@ -12,7 +12,7 @@ const SOURCES = [
 
 export default function Footer() {
   return (
-    <footer className="footer">
+    <footer className="footer glass">
       <div className="container">
         <p>
           <strong>jellosanime</strong> is an information site. jellosanime doesn't host, stream

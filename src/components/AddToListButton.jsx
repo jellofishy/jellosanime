@@ -32,7 +32,7 @@ export default function AddToListButton({ anime }) {
   if (loading) return null;
 
   // Not logged in: send them to the login page.
-  if (!user) return <Link to="/login" className="list-btn">Log in to save</Link>;
+  if (!user) return <Link to="/login" className="btn btn-secondary">Log in to save</Link>;
 
   async function toggle() {
     setBusy(true);
@@ -54,11 +54,11 @@ export default function AddToListButton({ anime }) {
 
   const name = anime.titleEnglish || anime.title || "this anime";
   return (
-    <div>
+    <div className="list-btn-wrap">
       {/* Heart toggle: aria-pressed tells screen readers if it is saved */}
       <button
         type="button"
-        className={"heart-btn" + (saved ? " saved" : "")}
+        className={"btn btn-secondary heart-btn" + (saved ? " saved" : "")}
         onClick={toggle}
         disabled={busy}
         aria-pressed={saved}

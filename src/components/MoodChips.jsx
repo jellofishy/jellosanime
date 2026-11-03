@@ -7,7 +7,7 @@ export default function MoodChips() {
   return (
     <nav className="mood-chips" aria-label="Pick a mood">
       {MOODS.map((m) => (
-        <Link key={m.label} to={moodLink(m)} className="mood-chip">{m.label}</Link>
+        <Link key={m.label} to={moodLink(m)} className="chip">{m.label}</Link>
       ))}
     </nav>
   );
