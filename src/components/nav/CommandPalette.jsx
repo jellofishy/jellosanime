@@ -128,7 +128,7 @@ export default function CommandPalette({ open, onClose }) {
                 <button
                   type="button"
                   tabIndex={-1}
-                  className={"nv-row nv-result" + (i === active ? " is-active" : "")}
+                  className={"nv-row nv-row-btn nv-result" + (i === active ? " is-active" : "")}
                   onMouseEnter={() => setActive(i)}
                   onClick={() => go(it.to)}
                 >

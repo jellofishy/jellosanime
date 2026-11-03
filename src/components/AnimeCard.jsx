@@ -27,11 +27,16 @@ export default function AnimeCard({ anime, episode, time, aired, note }) {
         {anime.image && !imgFailed && (
           <img src={anime.image} alt={name} loading="lazy" onError={() => setImgFailed(true)} />
         )}
-        {hasEpisode && <span className="poster-chip poster-chip-left">Ep {episode}</span>}
-        {time && (
-          <span className="poster-chip poster-chip-right">
-            <Clock className="icon" aria-hidden="true" /> {aired ? `Aired ${time}` : time}
-          </span>
+        {/* Small chips stacked in the top-left corner so they never overlap on narrow cards */}
+        {(hasEpisode || time) && (
+          <div className="poster-chips">
+            {hasEpisode && <span className="poster-chip">Ep {episode}</span>}
+            {time && (
+              <span className="poster-chip">
+                <Clock className="icon" aria-hidden="true" /> {aired ? `Aired ${time}` : time}
+              </span>
+            )}
+          </div>
         )}
         <div className="anime-scrim">
           <div className="anime-title">{name}</div>
