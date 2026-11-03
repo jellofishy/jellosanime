@@ -2,27 +2,12 @@
    Only token variables from theme.css are used (no hard-coded colors). Phone first.
    The big glass / button / chip classes (.glass, .btn, .chip ...) live in theme.css. */
 
-/* ---- Type scale (spec section 02). Phone sizes first, desktop sizes in the media query. ---- */
-.t-display { font-family: var(--font-display); font-weight: 700; font-size: 44px; line-height: 0.98; letter-spacing: -0.02em; margin: 0; }
-.t-h1 { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1.05; letter-spacing: -0.01em; margin: 0; }
-.t-h2 { font-family: var(--font-display); font-weight: 600; font-size: 24px; line-height: 1.15; margin: 0; }
-.t-h3 { font-family: var(--font-display); font-weight: 600; font-size: 22px; line-height: 1.25; margin: 0; }
-.t-body-l { font-size: 18px; line-height: 1.65; }
-.t-caption { font-family: var(--font-body); font-weight: 600; font-size: 13px; line-height: 1.35; }
-.t-eyebrow { font-family: var(--font-body); font-weight: 800; font-size: 12px; line-height: 1.2; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
-.muted { color: var(--muted); }
-@media (min-width: 900px) {
-  .t-display { font-size: 80px; }
-  .t-h1 { font-size: 48px; }
-  .t-h2 { font-size: 32px; }
-}
-
 /* ---- Form fields on glass (login, filters) ---- */
 .field-label { display: block; font-weight: 800; font-size: 15px; line-height: 1.3; margin-bottom: var(--s-1); }
 .field-input {
   width: 100%; min-height: 48px; padding: 10px var(--s-4);
   border-radius: var(--r-sm); color: var(--text);
-  background: var(--glass-card-bg); border: 1.5px solid color-mix(in srgb, var(--muted) 60%, transparent);
+  background: var(--field-bg); border: 1.5px solid var(--field-border);
   backdrop-filter: blur(var(--glass-card-blur)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(var(--glass-card-blur)) saturate(var(--glass-saturate));
   font-family: var(--font-body); font-size: 16px;
@@ -30,7 +15,7 @@
 }
 .field-input:focus-visible {
   outline: none; border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
+  box-shadow: 0 0 0 3px var(--focus-soft);
 }
 .field-input::placeholder { color: var(--muted); opacity: 1; }
 
@@ -56,3 +41,5 @@
 @media (prefers-reduced-motion: reduce) {
   .fade-in { animation-duration: 120ms; }
 }
+
+.page-title { margin: var(--s-5) 0 var(--s-4); overflow-wrap: anywhere; }

@@ -1,4 +1,4 @@
-// Shows the official trailer (YouTube, privacy-friendly "nocookie" player).
+// Shows the official trailer (YouTube, privacy-friendly "nocookie" player) in a rounded glass frame.
 // This is the ONLY place we embed video.
 export default function Trailer({ youtubeId }) {
   // Only allow normal-looking YouTube ids (letters, numbers, - and _).
@@ -7,14 +7,16 @@ export default function Trailer({ youtubeId }) {
   if (!valid) return <p className="muted">No official trailer available</p>;
 
   return (
-    <div className="trailer">
-      <iframe
-        src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
-        title="Official trailer"
-        loading="lazy"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      />
+    <div className="trailer-frame glass">
+      <div className="trailer">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
+          title="Official trailer"
+          loading="lazy"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // Browse / search page with filters. ALL filters live in the web address (?genres=1,22&year=2020...)
 // so a link can be shared and the Back button works. Helpers are in ../browseFilters.js.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { fetchAnimeList, fetchGenres } from "../api.js";
 import {
@@ -34,7 +34,6 @@ export default function Browse() {
   const [genres, setGenres] = useState([]);
   const [genresFailed, setGenresFailed] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false); // only matters on phones
-  const filtersButton = useRef(null);
 
   useEffect(() => {
     document.title = filters.q ? `${filters.q} | Browse | jellosanime` : "Browse | jellosanime";
@@ -109,7 +108,7 @@ export default function Browse() {
 
   return (
     <>
-      <h1 className="t-h1 browse-title">{heading}</h1>
+      <h1 className="t-h1 page-title">{heading}</h1>
 
       <div className="browse-toolbar">
         <div className="segmented" role="group" aria-label="Sort by">
@@ -119,7 +118,6 @@ export default function Browse() {
           ))}
         </div>
         <button
-          ref={filtersButton}
           type="button"
           className="btn btn-secondary filters-toggle"
           aria-expanded={panelOpen}

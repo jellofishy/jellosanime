@@ -6,7 +6,7 @@ export default function Background({ status, extras }) {
   if (status === "loading") {
     return (
       <section className="detail-section">
-        <h2>Background</h2>
+        <h2 className="t-h2">Background</h2>
         <div className="skeleton x-skel" aria-busy="true" aria-label="Loading background" />
       </section>
     );
@@ -16,10 +16,10 @@ export default function Background({ status, extras }) {
   if (!bg || !bg.extract) return null;
   const url = safeUrl(bg.url, "https://en.wikipedia.org/");
   return (
-    <section className="detail-section">
-      <h2>Background</h2>
+    <section className="detail-section fade-in">
+      <h2 className="t-h2">Background</h2>
       <p className="synopsis">{bg.extract}</p>
-      <p className="muted small">
+      <p className="muted t-caption">
         Text from Wikipedia, available under{" "}
         <a className="link" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>
         {url && <> — <a className="link" href={url} target="_blank" rel="noopener noreferrer">Read the full article on Wikipedia</a></>}

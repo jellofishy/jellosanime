@@ -1,7 +1,6 @@
 /* Browse page: toolbar, sort control, filter panel / bottom sheet, results, pager.
    Only token variables from theme.css. Phone first; the side panel appears at 900px. */
 
-.browse-title { margin: var(--s-5) 0 var(--s-4); overflow-wrap: anywhere; }
 .browse-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); margin-bottom: var(--s-5); }
 
 /* Segmented control (Popular / Score / Newest) */

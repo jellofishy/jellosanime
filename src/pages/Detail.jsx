@@ -172,10 +172,9 @@ export default function Detail() {
       </section>
 
       <section className="detail-section who-card glass" aria-labelledby="who-title">
-        <p className="t-eyebrow who-eyebrow">Who it's for</p>
-        <h2 className="t-h2" id="who-title">
-          <span className={`age-pill age-pill-${ageLevel}`}>{who.ageLabel || "Age rating unknown"}</span>
-        </h2>
+        <h2 className="t-h2" id="who-title">Who it's for</h2>
+        {/* The age badge always has a word, never only a color */}
+        <p className="who-age"><span className={`age-pill age-pill-${ageLevel}`}>{who.ageLabel || "Age rating unknown"}</span></p>
         {who.summary && <p className="who-summary t-body-l">{who.summary}</p>}
         {tags.length > 0 && (
           <div className="tag-list">

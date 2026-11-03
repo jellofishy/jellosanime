@@ -10,8 +10,8 @@ export default function Tags({ extras, skip = [] }) {
     .slice(0, 10);
   if (tags.length === 0) return null;
   return (
-    <div className="chips" aria-label="Tags">
-      {tags.map((t) => <span className="chip chip-tag" key={t.name}>{t.name}</span>)}
+    <div className="tag-list" aria-label="Tags">
+      {tags.map((t) => <span className="chip chip-static chip-tag" key={t.name}>{t.name}</span>)}
     </div>
   );
 }

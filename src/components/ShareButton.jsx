@@ -25,10 +25,10 @@ export default function ShareButton({ title }) {
 
   return (
     <span className="share-wrap">
-      <button type="button" className="ghost-btn" onClick={share} aria-label={`Share ${title}`}>
-        <span aria-hidden="true">↗</span> Share
+      <button type="button" className="btn btn-secondary" onClick={share} aria-label={`Share ${title}`}>
+        <span aria-hidden="true">↗</span>&nbsp;Share
       </button>
-      <span className="muted small" aria-live="polite">{msg}</span>
+      <span className="muted t-caption" aria-live="polite">{msg}</span>
     </span>
   );
 }

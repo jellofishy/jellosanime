@@ -1,6 +1,8 @@
 // "What fans think": a summary plus review cards (excerpts only, never the full text).
 import { isHttps, asArray } from "../safeUrl.js";
+import ErrorState from "./ErrorState.jsx";
 import "../detail.css";
+import "../states.css";
 
 const SOURCE_NAMES = { mal: "MyAnimeList", anilist: "AniList", kitsu: "Kitsu" };
 
@@ -15,16 +17,16 @@ function formatDate(d) {
 function ReviewCard({ r }) {
   const source = SOURCE_NAMES[r.source] || "Review";
   return (
-    <li className="review-card">
+    <li className="review-card glass">
       <div className="review-top">
-        <span className="source-badge">{source}</span>
+        <span className="badge badge-source">{source}</span>
         {r.author && <span className="review-author">{r.author}</span>}
         {typeof r.score === "number" && <span className="review-score">★ {r.score}</span>}
-        {r.recommended === true && <span className="pill pill-good">Recommended</span>}
-        {r.recommended === false && <span className="pill pill-bad">Not recommended</span>}
+        {r.recommended === true && <span className="badge badge-source pill-good">Recommended</span>}
+        {r.recommended === false && <span className="badge badge-source pill-bad">Not recommended</span>}
       </div>
       <p className="review-text">{r.excerpt}</p>
-      <div className="review-bottom small">
+      <div className="review-bottom t-caption">
         {r.date && <span className="muted">{formatDate(r.date)}</span>}
         {isHttps(r.url) && (
           <a className="link" href={r.url} target="_blank" rel="noopener noreferrer">Read full review</a>
@@ -34,18 +36,18 @@ function ReviewCard({ r }) {
   );
 }
 
-export default function Reviews({ status, extras }) {
+export default function Reviews({ status, extras, onRetry }) {
   let body;
   if (status === "loading") {
     body = <div className="skeleton x-skel" aria-busy="true" aria-label="Loading reviews" />;
   } else if (status === "error" || !extras) {
-    body = <p className="muted">Couldn't load reviews right now.</p>;
+    body = <ErrorState variant="strip" what="Reviews" onRetry={onRetry} />;
   } else {
     const reviews = asArray(extras.reviews).filter((r) => r && r.excerpt);
     const s = extras.reviewSummary || {};
     body = reviews.length === 0 ? <p className="muted">No reviews found yet.</p> : (
       <>
-        <p className="review-summary">
+        <p className="review-summary glass">
           {typeof s.averageScore === "number" && <strong>★ {s.averageScore} average · </strong>}
           {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
           {(s.recommended > 0 || s.notRecommended > 0) &&
@@ -59,9 +61,9 @@ export default function Reviews({ status, extras }) {
   }
   return (
     <section className="detail-section" aria-labelledby="reviews-title">
-      <h2 id="reviews-title">What fans think</h2>
+      <h2 id="reviews-title" className="t-h2">What fans think</h2>
       {body}
-      <p className="muted small">
+      <p className="muted t-caption">
         Reviews from MyAnimeList (via <a className="link" href="https://jikan.moe" target="_blank" rel="noopener noreferrer">Jikan</a>
         ), <a className="link" href="https://anilist.co" target="_blank" rel="noopener noreferrer">AniList</a> and{" "}
         <a className="link" href="https://kitsu.app" target="_blank" rel="noopener noreferrer">Kitsu</a>.
