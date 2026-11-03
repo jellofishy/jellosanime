@@ -91,8 +91,8 @@
   border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-2); overflow: hidden; }
 .nv-modal-search { display: flex; align-items: center; gap: var(--s-3); padding: 0 var(--s-4); min-height: 56px; border-bottom: 1px solid var(--border); }
 .nv-modal-search .icon { color: var(--muted); flex: none; }
-.nv-modal .nv-modal-input { flex: 1; padding: 0; box-shadow: none; border-radius: 0; min-width: 0; height: 56px; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 1rem; outline: none; }
-.nv-modal .nv-modal-input:focus { outline: none; box-shadow: none; }
+.nv-modal .nv-modal-input { flex: 1; padding: 0; box-shadow: none !important; border: 0 !important; border-radius: 0; min-width: 0; height: 56px; border: 0; background: transparent; color: var(--text); font: inherit; font-size: 1rem; outline: none; }
+.nv-modal .nv-modal-input:focus { outline: none; box-shadow: none !important; border: 0 !important; }
 .nv-modal-input::placeholder { color: var(--muted); }
 .nv-esc { border: 1px solid var(--border); border-radius: var(--r-sm); background: var(--card-2); color: var(--muted); font: inherit; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; min-height: 28px; cursor: pointer; }
 .nv-modal-body { overflow-y: auto; padding: var(--s-2); flex: 1; }
