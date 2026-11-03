@@ -58,15 +58,15 @@
 .mood-chips .chip { flex: none; }
 
 /* ---- rows ---- */
-.row { margin: var(--s-7) 0 0; }
+.anime-row { margin: var(--s-7) 0 0; }
 .row-title { margin: 0 0 var(--s-4); }
 .row-msg { margin: 0 0 var(--s-2); }
 .credit { margin: var(--s-2) 0 0; font-size: 13px; }
 .credit a { color: var(--accent); font-weight: 700; text-decoration: underline; }
 .row-wrap { position: relative; }
-.row-scroll { display: flex; gap: var(--s-4); overflow-x: auto; padding: var(--s-2) var(--s-1) var(--s-4);
+.row-track { display: flex; gap: var(--s-4); overflow-x: auto; padding: var(--s-2) var(--s-1) var(--s-4);
   scroll-snap-type: x mandatory; scroll-padding-left: var(--s-1); -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
-.row-scroll > .anime-card { flex: 0 0 150px; scroll-snap-align: start; }
+.row-track > .anime-card { flex: 0 0 150px; scroll-snap-align: start; }
 
 /* Arrow buttons: only on devices with a mouse. */
 .row-arrow { display: none; position: absolute; top: 38%; z-index: 2; width: 48px; height: 48px;
@@ -104,7 +104,7 @@
 /* Grid of poster cards (Browse, My List) */
 .anime-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); }
 @media (min-width: 640px) { .anime-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--s-5); } }
-@media (min-width: 900px) { .row-scroll > .anime-card { flex-basis: 188px; } }
+@media (min-width: 900px) { .row-track > .anime-card { flex-basis: 188px; } }
 
 @media (prefers-reduced-motion: reduce) {
   .spotlight-card { transform: none !important; transition: none; }

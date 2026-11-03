@@ -15,8 +15,8 @@ export default function Login() {
 
   if (!loginEnabled) {
     return (
-      <div className="auth-wrap">
-        <div className="auth-box glass-sheet"><p className="muted">Login isn't set up yet.</p></div>
+      <div className="login-wrap">
+        <div className="login-card glass-sheet"><p className="muted">Login isn't set up yet.</p></div>
       </div>
     );
   }
@@ -56,9 +56,9 @@ export default function Login() {
   }
 
   return (
-    <div className="auth-wrap">
-      <form className="auth-box glass-sheet" onSubmit={onSubmit}>
-        <h1 className="t-h1 auth-title">{mode === "login" ? "Log in" : "Create account"}</h1>
+    <div className="login-wrap">
+      <form className="login-card glass-sheet" onSubmit={onSubmit}>
+        <h1 className="t-h1 login-title">{mode === "login" ? "Log in" : "Create account"}</h1>
         <button type="button" className="btn google-btn" onClick={signInWithGoogle}>
           <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
             <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.5l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/>
@@ -68,7 +68,7 @@ export default function Login() {
           </svg>
           Continue with Google
         </button>
-        <p className="auth-or muted">or use your email</p>
+        <p className="login-or muted">or use your email</p>
         <div>
           <label htmlFor="login-email" className="field-label">Email</label>
           <input id="login-email" className="field-input" type="email" autoComplete="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -79,8 +79,8 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)} minLength={6} required />
         </div>
         <button type="submit" className="btn btn-primary btn-lg" disabled={busy}>{mode === "login" ? "Log in" : "Sign up"}</button>
-        {message && <p className="muted auth-message" role="status">{message}</p>}
-        <p className="muted auth-links">
+        {message && <p className="muted login-message" role="status">{message}</p>}
+        <p className="muted login-links">
           {mode === "login" ? "New here? " : "Already have an account? "}
           <a href="#" className="link" onClick={(e) => { e.preventDefault(); setMode(mode === "login" ? "signup" : "login"); setMessage(""); }}>
             {mode === "login" ? "Create an account" : "Log in"}

@@ -44,12 +44,12 @@ export default function AnimeRow({ title, items, failed, credit, emptyText, rend
 
   const headingId = `row-${title.replace(/\W+/g, "-").toLowerCase()}`;
   return (
-    <section className="row" aria-labelledby={headingId}>
+    <section className="anime-row" aria-labelledby={headingId}>
       <h2 id={headingId} className="t-h2 row-title">{title}</h2>
       {failed && <ErrorState variant="strip" what={title} onRetry={onRetry} />}
       {/* Glass placeholders while loading (same size as real cards, so nothing jumps) */}
       {loading && (
-        <div className="row-scroll" aria-busy="true" aria-label={`Loading ${title}`}>
+        <div className="row-track" aria-busy="true" aria-label={`Loading ${title}`}>
           {Array.from({ length: 7 }, (_, i) => (
             <div className="anime-card anime-card-skeleton" key={i} aria-hidden="true">
               <div className="anime-art skeleton" />
@@ -68,7 +68,7 @@ export default function AnimeRow({ title, items, failed, credit, emptyText, rend
             onClick={() => page(-1)} disabled={!canLeft}>
             <span aria-hidden="true">‹</span>
           </button>
-          <div className="row-scroll" ref={scroller} onScroll={updateArrows}>
+          <div className="row-track" ref={scroller} onScroll={updateArrows}>
             {items.map((a) =>
               renderCard ? renderCard(a) : <AnimeCard key={a.malId} anime={a} />
             )}

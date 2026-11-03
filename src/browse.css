@@ -60,8 +60,8 @@
 .sheet-done { width: 100%; margin-top: var(--s-5); }
 
 /* ---- results ---- */
-.pager { display: flex; justify-content: center; align-items: center; gap: var(--s-4); margin: var(--s-6) 0 var(--s-4); flex-wrap: wrap; }
-.pager-page { font-weight: 800; }
+.browse-pager { display: flex; justify-content: center; align-items: center; gap: var(--s-4); margin: var(--s-6) 0 var(--s-4); flex-wrap: wrap; }
+.browse-pager-page { font-weight: 800; }
 
 @media (prefers-reduced-motion: reduce) {
   .filter-host.is-sheet .filter-panel { transition: opacity 120ms linear; opacity: 0; transform: none; }

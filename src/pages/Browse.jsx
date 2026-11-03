@@ -193,9 +193,9 @@ export default function Browse() {
             </div>
           )}
           {data && (data.results.length > 0 || filters.page > 1) && (
-            <div className="pager">
+            <div className="browse-pager">
               <button type="button" className="btn btn-secondary" disabled={filters.page === 1} onClick={() => goToPage(filters.page - 1)}>← Previous</button>
-              <span className="pager-page">Page {filters.page}</span>
+              <span className="browse-pager-page">Page {filters.page}</span>
               <button type="button" className="btn btn-secondary" disabled={!data.hasNextPage} onClick={() => goToPage(filters.page + 1)}>Next →</button>
             </div>
           )}

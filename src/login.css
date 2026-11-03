@@ -1,12 +1,12 @@
 /* Login page: one centered frosted-glass sheet. Only token variables. */
-.auth-wrap { display: flex; justify-content: center; padding: var(--s-6) 0 var(--s-7); }
-.auth-box { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: var(--s-4);
+.login-wrap { display: flex; justify-content: center; padding: var(--s-6) 0 var(--s-7); }
+.login-card { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: var(--s-4);
   padding: var(--s-6) var(--s-5); border-radius: var(--r-xl); box-shadow: var(--shadow-glass); }
-.auth-title { margin: 0; }
-.auth-or { text-align: center; margin: 0; font-size: 14px; }
-.auth-message { margin: 0; }
-.auth-links { margin: 0; text-align: center; }
+.login-title { margin: 0; }
+.login-or { text-align: center; margin: 0; font-size: 14px; }
+.login-message { margin: 0; }
+.login-links { margin: 0; text-align: center; }
 /* Google button: neutral glass so it reads in light and dark */
 .google-btn { gap: var(--s-3); background: var(--glass-card-bg); color: var(--text);
   border: 1.5px solid color-mix(in srgb, var(--muted) 60%, transparent); }
-@media (min-width: 700px) { .auth-box { padding: var(--s-7) var(--s-6); } .auth-wrap { padding-top: var(--s-7); } }
+@media (min-width: 700px) { .login-card { padding: var(--s-7) var(--s-6); } .login-wrap { padding-top: var(--s-7); } }

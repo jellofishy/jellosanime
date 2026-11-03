@@ -157,7 +157,7 @@ export default function Detail() {
             </div>
           </div>
           {facts.length > 0 && (
-            <dl className="facts">
+            <dl className="detail-facts">
               {facts.map(([k, v]) => (
                 <div key={k}><dt className="t-caption">{k}</dt><dd>{String(v)}</dd></div>
               ))}
@@ -171,7 +171,7 @@ export default function Detail() {
         <p className="synopsis t-body-l">{anime.synopsis || "No synopsis available yet."}</p>
       </section>
 
-      <section className="detail-section who-card glass" aria-labelledby="who-title">
+      <section className="detail-section who-callout glass" aria-labelledby="who-title">
         <h2 className="t-h2" id="who-title">Who it's for</h2>
         {/* The age badge always has a word, never only a color */}
         <p className="who-age"><span className={`age-pill age-pill-${ageLevel}`}>{who.ageLabel || "Age rating unknown"}</span></p>

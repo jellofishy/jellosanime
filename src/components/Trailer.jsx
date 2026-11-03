@@ -8,7 +8,7 @@ export default function Trailer({ youtubeId }) {
 
   return (
     <div className="trailer-frame glass">
-      <div className="trailer">
+      <div className="trailer-video">
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
           title="Official trailer"
